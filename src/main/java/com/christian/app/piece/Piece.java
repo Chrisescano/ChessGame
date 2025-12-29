@@ -1,6 +1,10 @@
 package com.christian.app.piece;
 
+import com.christian.app.game.Direction;
 import com.christian.app.game.GameConstants;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Piece {
 
@@ -8,6 +12,7 @@ public class Piece {
   private final Position position;
   private final boolean isWhite;
   private final char symbol;
+  private Map<Direction, List<Position>> moves = new HashMap<>();
 
   public Piece(Type type, boolean isWhite) {
     this(type, new Position(), isWhite);
@@ -20,8 +25,10 @@ public class Piece {
     symbol = switch (type) {
       case PAWN -> isWhite ? GameConstants.WHITE_PAWN_SYMBOL : GameConstants.BLACK_PAWN_SYMBOL;
       case ROOK -> isWhite ? GameConstants.WHITE_ROOK_SYMBOL : GameConstants.BLACK_ROOK_SYMBOL;
-      case KNIGHT -> isWhite ? GameConstants.WHITE_KNIGHT_SYMBOL : GameConstants.BLACK_KNIGHT_SYMBOL;
-      case BISHOP -> isWhite ? GameConstants.WHITE_BISHOP_SYMBOL : GameConstants.BLACK_BISHOP_SYMBOL;
+      case KNIGHT ->
+          isWhite ? GameConstants.WHITE_KNIGHT_SYMBOL : GameConstants.BLACK_KNIGHT_SYMBOL;
+      case BISHOP ->
+          isWhite ? GameConstants.WHITE_BISHOP_SYMBOL : GameConstants.BLACK_BISHOP_SYMBOL;
       case KING -> isWhite ? GameConstants.WHITE_KING_SYMBOL : GameConstants.BLACK_KING_SYMBOL;
       case QUEEN -> isWhite ? GameConstants.WHITE_QUEEN_SYMBOL : GameConstants.BLACK_QUEEN_SYMBOL;
     };
@@ -59,5 +66,13 @@ public class Piece {
 
   public char getSymbol() {
     return symbol;
+  }
+
+  public Map<Direction, List<Position>> getMoves() {
+    return moves;
+  }
+
+  public void setMoves(Map<Direction, List<Position>> moves) {
+    this.moves = moves;
   }
 }

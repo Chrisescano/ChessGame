@@ -2,6 +2,7 @@ package com.christian.app.game;
 
 import com.christian.app.piece.Piece;
 import com.christian.app.piece.Position;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
@@ -36,6 +37,14 @@ public class Board {
   }
 
   // Getter/Setter
+
+  public List<Piece> getPieces(List<Position> positions) {
+    List<Piece> pieces = new ArrayList<>(positions.size());
+    for (Position position : positions) {
+      pieces.add(getPiece(position));
+    }
+    return pieces;
+  }
 
   public Piece getPiece(Position position) {
     return getPiece(position.getX(), position.getY());

@@ -1,5 +1,7 @@
 package com.christian.app.piece;
 
+import java.util.Objects;
+
 public class Position {
 
   private int x;
@@ -13,7 +15,20 @@ public class Position {
     this.y = y;
   }
 
-  /// Methods
+  // Methods
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Position position)) {
+      return false;
+    }
+    return x == position.x && y == position.y;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(x, y);
+  }
 
   @Override
   public String toString() {
