@@ -2,11 +2,10 @@ package com.christian.app.parser;
 
 import com.christian.app.game.Board;
 import com.christian.app.game.Fen;
-import com.christian.app.game.GameConstants;
-import com.christian.app.game.GameUtil;
+import com.christian.app.game.util.GameConstants;
+import com.christian.app.game.util.GameUtil;
 import com.christian.app.piece.Piece;
 import com.christian.app.piece.Position;
-import com.christian.app.piece.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

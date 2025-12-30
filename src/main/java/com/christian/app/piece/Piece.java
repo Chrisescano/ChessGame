@@ -1,6 +1,6 @@
 package com.christian.app.piece;
 
-import com.christian.app.game.GameConstants;
+import com.christian.app.game.util.GameConstants;
 
 public class Piece {
 

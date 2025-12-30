@@ -1,4 +1,4 @@
-package com.christian.app.game;
+package com.christian.app.game.util;
 
 public class GameConstants {
 

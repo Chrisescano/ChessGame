@@ -1,5 +1,6 @@
 package com.christian.app.game;
 
+import com.christian.app.game.util.GameConstants;
 import com.christian.app.piece.Piece;
 import com.christian.app.piece.Position;
 import java.util.List;
