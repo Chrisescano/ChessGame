@@ -64,9 +64,8 @@ public class FenParser {
     int x = 0, y = 0, count = 0;
     List<Piece> pieces = new ArrayList<>();
     for (char token : boardStateString.toCharArray()) {
-      Piece piece = toPiece(token);
+      Piece piece = Piece.create(token, x, y);
       if (piece != null) {
-        piece.updatePos(x, y);
         pieces.add(piece);
         x++;
         count++;
@@ -197,23 +196,5 @@ public class FenParser {
     } catch (NumberFormatException ignored) {
     }
     return min;
-  }
-
-  private Piece toPiece(char symbol) {
-    return switch (symbol) {
-      case GameConstants.WHITE_PAWN_SYMBOL -> new Piece(Type.PAWN, true);
-      case GameConstants.BLACK_PAWN_SYMBOL -> new Piece(Type.PAWN, false);
-      case GameConstants.WHITE_ROOK_SYMBOL -> new Piece(Type.ROOK, true);
-      case GameConstants.BLACK_ROOK_SYMBOL -> new Piece(Type.ROOK, false);
-      case GameConstants.WHITE_KNIGHT_SYMBOL -> new Piece(Type.KNIGHT, true);
-      case GameConstants.BLACK_KNIGHT_SYMBOL -> new Piece(Type.KNIGHT, false);
-      case GameConstants.WHITE_BISHOP_SYMBOL -> new Piece(Type.BISHOP, true);
-      case GameConstants.BLACK_BISHOP_SYMBOL -> new Piece(Type.BISHOP, false);
-      case GameConstants.WHITE_QUEEN_SYMBOL -> new Piece(Type.QUEEN, true);
-      case GameConstants.BLACK_QUEEN_SYMBOL -> new Piece(Type.QUEEN, false);
-      case GameConstants.WHITE_KING_SYMBOL -> new Piece(Type.KING, true);
-      case GameConstants.BLACK_KING_SYMBOL -> new Piece(Type.KING, false);
-      default -> null;
-    };
   }
 }
