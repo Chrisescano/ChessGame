@@ -1,22 +1,23 @@
 package com.christian.app.game;
 
 import com.christian.app.game.util.GameConstants;
-import com.christian.app.piece.Piece;
+import com.christian.app.parser.FenParser;
 import com.christian.app.piece.Position;
-import java.util.List;
 
 public class Fen {
 
-  private final Board board = new Board();
+  private static final FenParser parser = new FenParser();
+
+  private final Board board;
   boolean activeColor;
   boolean[] castlingRights;
   private final Position enPassant;
   int halfMoveCounter;
   int fullMoveClock;
 
-  public Fen(List<Piece> pieces, boolean activeColor, boolean[] castlingRights, Position enPassant,
+  public Fen(Board board, boolean activeColor, boolean[] castlingRights, Position enPassant,
       int halfMoveCounter, int fullMoveClock) {
-    this.board.addPieces(pieces);
+    this.board = board;
     this.activeColor = activeColor;
     this.castlingRights = castlingRights;
     this.enPassant = enPassant;
@@ -25,6 +26,10 @@ public class Fen {
   }
 
   // Methods
+
+  public static Fen parse(String fenString) {
+    return parser.parseFen(fenString);
+  }
 
   public void flipActiveColor() {
     activeColor = !activeColor;
@@ -50,6 +55,11 @@ public class Fen {
 
   public void incrementFullMoveClock() {
     fullMoveClock++;
+  }
+
+  @Override
+  public String toString() {
+    return "Fen{" + parser.toFenString(this) + "}";
   }
 
   // Getter/Setter

@@ -6,8 +6,6 @@ import com.christian.app.game.util.GameConstants;
 import com.christian.app.game.util.GameUtil;
 import com.christian.app.piece.Piece;
 import com.christian.app.piece.Position;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,14 +29,14 @@ public class FenParser {
     String halfMoveCounterString = safeComps[GameConstants.HALF_MOVE_COUNTER_INDEX];
     String fullMoveClockString = safeComps[GameConstants.FULL_MOVE_CLOCK_INDEX];
 
-    List<Piece> pieces = parseBoardState(boardStateString);
+    Board board = parseBoardState(boardStateString);
     boolean activeColor = parseActiveColor(activeColorString);
     boolean[] castlingRights = parseCastlingRights(castlingRightsString);
     Position enPassant = parseEnpassant(enPassantString);
     int halfMoveCounter = parseMoveCounters(halfMoveCounterString, 0, GameConstants.HALF_MOVE_MAX);
     int fullMoveClock = parseMoveCounters(fullMoveClockString, 0, GameConstants.FULL_MOVE_MAX);
 
-    return new Fen(pieces, activeColor, castlingRights, enPassant, halfMoveCounter, fullMoveClock);
+    return new Fen(board, activeColor, castlingRights, enPassant, halfMoveCounter, fullMoveClock);
   }
 
   public String toFenString(Fen fen) {
@@ -55,17 +53,17 @@ public class FenParser {
         fen.getHalfMoveCounter(), fen.getFullMoveClock());
   }
 
-  private List<Piece> parseBoardState(String boardStateString) {
+  private Board parseBoardState(String boardStateString) {
     if (boardStateString == null || boardStateString.isEmpty()) {
       return null;
     }
 
     int x = 0, y = 0, count = 0;
-    List<Piece> pieces = new ArrayList<>();
+    Board board = new Board();
     for (char token : boardStateString.toCharArray()) {
       Piece piece = Piece.create(token, x, y);
       if (piece != null) {
-        pieces.add(piece);
+        board.addPiece(piece);
         x++;
         count++;
       } else if (token >= '1' && token <= '8') {
@@ -79,7 +77,7 @@ public class FenParser {
     }
 
     if (count == GameConstants.BOARD_TILE_COUNT) {
-      return pieces;
+      return board;
     } else {
       return null;
     }
