@@ -43,26 +43,26 @@ public class AlgebraicNotationParser {
     String destRank = matcher.group(GameConstants.ALG_NOT_DEST_RANK);
     String checkOrMate = matcher.group(GameConstants.ALG_NOT_CHECK_OR_MATE);
 
-    if (symbol != null) {
+    if (symbol != null && !symbol.isEmpty()) {
       notation.setSymbol(symbol.charAt(0));
     }
 
-    if (optFile != null) {
+    if (optFile != null && !optFile.isEmpty()) {
       notation.setStartX(GameUtil.toFileIndex(optFile.charAt(0)));
     }
 
-    if (optRank != null) {
+    if (optRank != null && !optRank.isEmpty()) {
       notation.setStartY(GameUtil.toRankIndex(optRank.charAt(0)));
     }
 
-    if (capture != null) {
+    if (capture != null && !capture.isEmpty()) {
       notation.setCapture(true);
     }
 
     notation.setEndX(GameUtil.toFileIndex(destFile.charAt(0)));
     notation.setEndY(GameUtil.toRankIndex(destRank.charAt(0)));
 
-    if (checkOrMate != null) {
+    if (checkOrMate != null && !checkOrMate.isEmpty()) {
       if (checkOrMate.equals(GameConstants.ALGEBRAIC_NOTATION_CHECK)) {
         notation.setCheck(true);
       } else if (checkOrMate.equals(GameConstants.ALGEBRAIC_NOTATION_MATE)) {

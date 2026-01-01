@@ -4,6 +4,8 @@ import com.christian.app.parser.AlgebraicNotationParser;
 
 public class AlgebraicNotation {
 
+  private static final AlgebraicNotationParser parser = new AlgebraicNotationParser();
+
   private int startX;
   private int startY;
   private int endX;
@@ -17,6 +19,31 @@ public class AlgebraicNotation {
   private boolean isWhiteWin;
   private boolean isBlackWin;
   private boolean isDraw;
+
+  // Methods
+
+  public static AlgebraicNotation parse(String algebraicNotation) {
+    return parser.parseAlgebraicNotation(algebraicNotation);
+  }
+
+  @Override
+  public String toString() {
+    return "AlgebraicNotation{" +
+        "startX=" + startX +
+        ", startY=" + startY +
+        ", endX=" + endX +
+        ", endY=" + endY +
+        ", symbol=" + symbol +
+        ", isCapture=" + isCapture +
+        ", isCheck=" + isCheck +
+        ", isMate=" + isMate +
+        ", isKingsideCastle=" + isKingsideCastle +
+        ", isQueensideCastle=" + isQueensideCastle +
+        ", isWhiteWin=" + isWhiteWin +
+        ", isBlackWin=" + isBlackWin +
+        ", isDraw=" + isDraw +
+        '}';
+  }
 
   // Getters/Setters
 
