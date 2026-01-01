@@ -1,5 +1,7 @@
 package com.christian.app.game.util;
 
+import java.util.List;
+
 public class GameConstants {
 
   public static final String STRING_SPACE = " ";
@@ -8,6 +10,14 @@ public class GameConstants {
   public static final String STRING_HYPHEN = "-";
   public static final String STRING_SLASH = "/";
   public static final String CASTLING_RIGHTS_PATTERN = "^Q?K?q?k?$";
+  public static final String CASTLING_QUEENSIDE = "0-0-0";
+  public static final String CASTLING_KINGSIDE = "0-0";
+  public static final String WHITE_WINS = "\"1-0\"";
+  public static final String BLACK_WINS = "\"0-1\"";
+  public static final String DRAW = "\"1/2-1/2\"";
+  public static final String ALGEBRAIC_NOTATION_PATTERN = "^([RNBQKrnbqk]?)([a-f]?)([1-8]?)(x?)([a-f])([1-8])([+#])?";
+  public static final String ALGEBRAIC_NOTATION_CHECK = "+";
+  public static final String ALGEBRAIC_NOTATION_MATE = "#";
 
   public static final int CASTLING_WHITE_QUEEN = 0;
   public static final int CASTLING_WHITE_KING = 1;
@@ -26,6 +36,13 @@ public class GameConstants {
   public static final int HALF_MOVE_MAX = 100;
   public static final int FULL_MOVE_CLOCK_INDEX = 5;
   public static final int FULL_MOVE_MAX = 50;
+  public static final int ALG_NOT_PIECE = 1;
+  public static final int ALG_NOT_OPT_FILE = 2;
+  public static final int ALG_NOT_OPT_RANK = 3;
+  public static final int ALG_NOT_CAPTURE = 4;
+  public static final int ALG_NOT_DEST_FILE = 5;
+  public static final int ALG_NOT_DEST_RANK = 6;
+  public static final int ALG_NOT_CHECK_OR_MATE = 7;
 
   public static final char WHITE_PAWN_SYMBOL = 'P';
   public static final char BLACK_PAWN_SYMBOL = 'p';
