@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 
 public class AlgebraicNotationParser {
 
+  private static final Pattern PATTERN = Pattern.compile(GameConstants.ALGEBRAIC_NOTATION_PATTERN);
+
   public AlgebraicNotation parseAlgebraicNotation(String algebraicNotationString) {
     if (algebraicNotationString == null || algebraicNotationString.length() < 2) {
       return null;
@@ -28,9 +30,7 @@ public class AlgebraicNotationParser {
   }
 
   public void parseAndPopulate(String algNotStr, AlgebraicNotation notation) {
-    Pattern pattern = Pattern.compile(GameConstants.ALGEBRAIC_NOTATION_PATTERN);
-    Matcher matcher = pattern.matcher(algNotStr);
-
+    Matcher matcher = PATTERN.matcher(algNotStr);
     if (!matcher.matches()) {
       return;
     }

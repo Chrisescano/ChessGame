@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 
 public class FenParser {
 
+  private static final Pattern CASTLING_PATTERN = Pattern.compile(GameConstants.CASTLING_RIGHTS_PATTERN);
+
   public Fen parseFen(String fenString) {
     if (fenString == null || fenString.isEmpty()) {
       return null;
@@ -133,8 +135,7 @@ public class FenParser {
       return castlingRights;
     }
 
-    Pattern pattern = Pattern.compile(GameConstants.CASTLING_RIGHTS_PATTERN);
-    Matcher matcher = pattern.matcher(castlingRightsString);
+    Matcher matcher = CASTLING_PATTERN.matcher(castlingRightsString);
     if (matcher.matches()) {
       for (int i = 0; i < 4; i++) {
         castlingRights[i] = matcher.group(i + 1) != null;
