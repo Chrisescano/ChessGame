@@ -4,55 +4,46 @@ import com.christian.app.game.util.GameConstants;
 import com.christian.app.game.util.GameUtil;
 import com.christian.app.piece.Piece;
 import com.christian.app.piece.Position;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
 
-  private final Piece[] board;
+  private final Tile[] board;
 
   public Board() {
-    board = new Piece[GameConstants.BOARD_TILE_COUNT];
+    board = new Tile[GameConstants.BOARD_TILE_COUNT];
   }
 
   // Methods
 
   public void addPieces(List<Piece> pieces) {
-    pieces.forEach(this::addPiece);
+    pieces.forEach(this::placePiece);
   }
 
-  public boolean addPiece(Piece piece) {
+  public void placePiece(Piece piece) {
     int index = GameUtil.toIndex(piece.getPosition());
     if (GameUtil.isInsideRange(index, 0, GameConstants.BOARD_TILE_COUNT)) {
-      board[index] = piece;
-      return true;
+      board[index].setPiece(piece);
     }
-    return false;
   }
 
   public Piece removePiece(Position position) {
     int index = GameUtil.toIndex(position);
     if (GameUtil.isInsideRange(index, 0, GameConstants.BOARD_TILE_COUNT)) {
-      return board[index];
+      Piece piece = board[index].getPiece();
+      board[index].setPiece(null);
+      return piece;
     }
     return null;
   }
 
   // Getter/Setter
 
-  public List<Piece> getPieces(List<Position> positions) {
-    List<Piece> pieces = new ArrayList<>(positions.size());
-    for (Position position : positions) {
-      pieces.add(getPiece(position));
-    }
-    return pieces;
+  public Tile getTile(Position position) {
+    return getTile(position.getX(), position.getY());
   }
 
-  public Piece getPiece(Position position) {
-    return getPiece(position.getX(), position.getY());
-  }
-
-  public Piece getPiece(int x, int y) {
+  public Tile getTile(int x, int y) {
     int index = GameUtil.toIndex(x, y);
     if (GameUtil.isInsideRange(index, 0, GameConstants.BOARD_TILE_COUNT)) {
       return board[index];

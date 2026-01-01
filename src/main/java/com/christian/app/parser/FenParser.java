@@ -65,7 +65,7 @@ public class FenParser {
     for (char token : boardStateString.toCharArray()) {
       Piece piece = Piece.create(token, x, y);
       if (piece != null) {
-        board.addPiece(piece);
+        board.placePiece(piece);
         x++;
         count++;
       } else if (token >= '1' && token <= '8') {
@@ -94,7 +94,7 @@ public class FenParser {
     for (int y = 0; y < GameConstants.BOARD_HEIGHT; y++) {
       int spaces = 0;
       for (int x = 0; x < GameConstants.BOARD_WIDTH; x++) {
-        Piece piece = board.getPiece(x, y);
+        Piece piece = board.getTile(x, y).getPiece();
         if (piece == null) {
           spaces++;
         } else {

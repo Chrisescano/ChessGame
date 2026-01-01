@@ -1,6 +1,7 @@
 package com.christian.app.game.util;
 
 import com.christian.app.game.Board;
+import com.christian.app.game.Tile;
 import com.christian.app.piece.Piece;
 import com.christian.app.piece.Position;
 import java.util.ArrayList;
@@ -143,14 +144,13 @@ public class MoveManager {
 
   private boolean validatePath(Piece piece, List<Position> path) {
     for (int i = 0; i < path.size() - 1; i++) {
-      Piece pieceOnPath = board.getPiece(path.get(i));
-      if (pieceOnPath != null) {
+      if (board.getTile(path.get(i)).getPiece() != null) {
         return false;
       }
     }
 
-    Piece lastPieceOnPath = board.getPiece(path.getLast());
-    return lastPieceOnPath == null || isEnemies(piece, lastPieceOnPath);
+    Tile lastTile = board.getTile(path.getLast());
+    return lastTile == null || isEnemies(piece, lastTile.getPiece());
   }
 
   // Utility Methods
