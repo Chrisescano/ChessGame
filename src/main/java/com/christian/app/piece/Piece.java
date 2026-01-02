@@ -1,13 +1,19 @@
 package com.christian.app.piece;
 
+import com.christian.app.game.util.Direction;
 import com.christian.app.game.util.GameConstants;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class Piece {
+public abstract class Piece {
 
-  private final Type type;
-  private final Position position;
-  private final boolean isWhite;
-  private final char symbol;
+  protected Map<Direction, List<Position>> moves = new HashMap<>();
+  protected final Type type;
+  protected final Position position;
+  protected final boolean isWhite;
+  protected final char symbol;
 
   public Piece(Type type, Position position, boolean isWhite, char symbol) {
     this.type = type;
@@ -19,20 +25,15 @@ public class Piece {
   // Methods
 
   public static Piece create(char symbol, int x, int y) {
-    Type type = switch (symbol) {
-      case GameConstants.WHITE_PAWN_SYMBOL, GameConstants.BLACK_PAWN_SYMBOL -> Type.PAWN;
-      case GameConstants.WHITE_ROOK_SYMBOL, GameConstants.BLACK_ROOK_SYMBOL -> Type.ROOK;
-      case GameConstants.WHITE_KNIGHT_SYMBOL, GameConstants.BLACK_KNIGHT_SYMBOL -> Type.KNIGHT;
-      case GameConstants.WHITE_BISHOP_SYMBOL, GameConstants.BLACK_BISHOP_SYMBOL -> Type.BISHOP;
-      case GameConstants.WHITE_QUEEN_SYMBOL, GameConstants.BLACK_QUEEN_SYMBOL -> Type.QUEEN;
-      case GameConstants.WHITE_KING_SYMBOL, GameConstants.BLACK_KING_SYMBOL -> Type.KING;
+    return switch (symbol) {
+      case GameConstants.WHITE_PAWN_SYMBOL, GameConstants.BLACK_PAWN_SYMBOL -> Pawn.create(symbol, x, y);
+      case GameConstants.WHITE_ROOK_SYMBOL, GameConstants.BLACK_ROOK_SYMBOL -> Rook.create(symbol, x, y);
+      case GameConstants.WHITE_KNIGHT_SYMBOL, GameConstants.BLACK_KNIGHT_SYMBOL -> Knight.create(symbol, x, y);
+      case GameConstants.WHITE_BISHOP_SYMBOL, GameConstants.BLACK_BISHOP_SYMBOL -> Bishop.create(symbol, x, y);
+      case GameConstants.WHITE_QUEEN_SYMBOL, GameConstants.BLACK_QUEEN_SYMBOL -> Queen.create(symbol, x, y);
+      case GameConstants.WHITE_KING_SYMBOL, GameConstants.BLACK_KING_SYMBOL -> King.create(symbol, x, y);
       default -> null;
     };
-
-    if (type != null) {
-      return new Piece(type, new Position(x, y), Character.isUpperCase(symbol), symbol);
-    }
-    return null;
   }
 
   public void updatePos(int x, int y) {
@@ -47,6 +48,16 @@ public class Piece {
         ", position=" + position +
         ", isWhite=" + isWhite +
         '}';
+  }
+
+  protected static List<Position> buildPath(Position start, Direction direction, int steps) {
+    List<Position> path = new ArrayList<>();
+    for (int i = 1; i <= steps; i++) {
+      int stepX = start.getX() * (direction.getPosition().getX() * i);
+      int stepY = start.getY() * (direction.getPosition().getY() * i);
+      path.add(new Position(stepX, stepY));
+    }
+    return path;
   }
 
   // Getter/Setter
