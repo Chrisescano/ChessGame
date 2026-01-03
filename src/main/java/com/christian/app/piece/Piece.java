@@ -2,6 +2,7 @@ package com.christian.app.piece;
 
 import com.christian.app.game.util.Direction;
 import com.christian.app.game.util.GameConstants;
+import com.christian.app.game.util.GameUtil;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,15 +26,18 @@ public abstract class Piece {
   // Methods
 
   public static Piece create(char symbol, int x, int y) {
-    return switch (symbol) {
-      case GameConstants.WHITE_PAWN_SYMBOL, GameConstants.BLACK_PAWN_SYMBOL -> Pawn.create(symbol, x, y);
-      case GameConstants.WHITE_ROOK_SYMBOL, GameConstants.BLACK_ROOK_SYMBOL -> Rook.create(symbol, x, y);
-      case GameConstants.WHITE_KNIGHT_SYMBOL, GameConstants.BLACK_KNIGHT_SYMBOL -> Knight.create(symbol, x, y);
-      case GameConstants.WHITE_BISHOP_SYMBOL, GameConstants.BLACK_BISHOP_SYMBOL -> Bishop.create(symbol, x, y);
-      case GameConstants.WHITE_QUEEN_SYMBOL, GameConstants.BLACK_QUEEN_SYMBOL -> Queen.create(symbol, x, y);
-      case GameConstants.WHITE_KING_SYMBOL, GameConstants.BLACK_KING_SYMBOL -> King.create(symbol, x, y);
-      default -> null;
-    };
+    if (GameUtil.isInsideRange(x, 0, GameConstants.BOARD_WIDTH) && GameUtil.isInsideRange(y, 0, GameConstants.BOARD_HEIGHT) ) {
+      return switch (symbol) {
+        case GameConstants.WHITE_PAWN_SYMBOL, GameConstants.BLACK_PAWN_SYMBOL -> Pawn.create(symbol, x, y);
+        case GameConstants.WHITE_ROOK_SYMBOL, GameConstants.BLACK_ROOK_SYMBOL -> Rook.create(symbol, x, y);
+        case GameConstants.WHITE_KNIGHT_SYMBOL, GameConstants.BLACK_KNIGHT_SYMBOL -> Knight.create(symbol, x, y);
+        case GameConstants.WHITE_BISHOP_SYMBOL, GameConstants.BLACK_BISHOP_SYMBOL -> Bishop.create(symbol, x, y);
+        case GameConstants.WHITE_QUEEN_SYMBOL, GameConstants.BLACK_QUEEN_SYMBOL -> Queen.create(symbol, x, y);
+        case GameConstants.WHITE_KING_SYMBOL, GameConstants.BLACK_KING_SYMBOL -> King.create(symbol, x, y);
+        default -> null;
+      };
+    }
+    return null;
   }
 
   public void updatePos(int x, int y) {
