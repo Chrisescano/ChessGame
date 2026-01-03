@@ -29,7 +29,49 @@ public class MoveManager {
     };
   }
 
-  // Piece specific validations
+  public static void main(String[] args) {
+    Board board = new Board();
+    Piece queen = Piece.create('Q', 0, 0);
+    Piece bishop = Piece.create('b', 2, 0);
+    board.placePiece(queen);
+    board.placePiece(bishop);
+
+    MoveManager moveManager = new MoveManager(board);
+    moveManager.updatePieceMoves(queen);
+  }
+
+  public void updatePieceMoves(Piece piece) {
+    switch (piece.getType()) {
+      case ROOK, BISHOP, QUEEN -> updateSlidingPieceMoves(piece);
+    }
+  }
+
+  private void updateSlidingPieceMoves(Piece piece) {
+    for (Direction direction : piece.getMoves().keySet()) {
+      boolean lastMoveEnabled = true;
+      for (Position move : piece.getMoves().get(direction)) {
+        if (lastMoveEnabled) {
+          if (isInsideBoard(move)) {
+            move.setEnabled(true);
+          } else {
+            move.setEnabled(false);
+            lastMoveEnabled = false;
+            continue;
+          }
+
+          Piece boardPiece = board.getPiece(move);
+          if (boardPiece == null) {
+            move.setEnabled(true);
+          } else {
+            move.setEnabled(isEnemies(piece, boardPiece));
+            lastMoveEnabled = false;
+          }
+        } else {
+          move.setEnabled(false);
+        }
+      }
+    }
+  }
 
   private boolean validateRookMove(Piece piece, Position destination) {
     Position position = piece.getPosition();
@@ -143,12 +185,12 @@ public class MoveManager {
 
   private boolean validatePath(Piece piece, List<Position> path) {
     for (int i = 0; i < path.size() - 1; i++) {
-      if (board.getTile(path.get(i)) != null) {
+      if (board.getPiece(path.get(i)) != null) {
         return false;
       }
     }
 
-    Piece lastTile = board.getTile(path.getLast());
+    Piece lastTile = board.getPiece(path.getLast());
     return lastTile == null || isEnemies(piece, lastTile);
   }
 
@@ -178,5 +220,10 @@ public class MoveManager {
 
   private boolean isEnemies(Piece pieceA, Piece pieceB) {
     return pieceA.isWhite() != pieceB.isWhite();
+  }
+
+  private boolean isInsideBoard(Position position) {
+    int index = GameUtil.toIndex(position);
+    return GameUtil.isInsideRange(index, 0, GameConstants.BOARD_TILE_COUNT);
   }
 }

@@ -94,7 +94,7 @@ public class FenParser {
     for (int y = 0; y < GameConstants.BOARD_HEIGHT; y++) {
       int spaces = 0;
       for (int x = 0; x < GameConstants.BOARD_WIDTH; x++) {
-        Piece piece = board.getTile(x, y);
+        Piece piece = board.getPiece(x, y);
         if (piece == null) {
           spaces++;
         } else {

@@ -25,7 +25,7 @@ public class GameUtil {
   }
 
   public static int toIndex(Position position) {
-    return toIndex(position.getY(), position.getY());
+    return toIndex(position.getX(), position.getY());
   }
 
   public static int toIndex(int x, int y) {

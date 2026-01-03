@@ -57,14 +57,18 @@ public abstract class Piece {
   protected static List<Position> buildPath(Position start, Direction direction, int steps) {
     List<Position> path = new ArrayList<>();
     for (int i = 1; i <= steps; i++) {
-      int stepX = start.getX() * (direction.getPosition().getX() * i);
-      int stepY = start.getY() * (direction.getPosition().getY() * i);
+      int stepX = start.getX() + (direction.getPosition().getX() * i);
+      int stepY = start.getY() + (direction.getPosition().getY() * i);
       path.add(new Position(stepX, stepY));
     }
     return path;
   }
 
   // Getter/Setter
+
+  public Map<Direction, List<Position>> getMoves() {
+    return moves;
+  }
 
   public Type getType() {
     return type;

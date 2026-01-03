@@ -39,11 +39,11 @@ public class Board {
 
   // Getter/Setter
 
-  public Piece getTile(Position position) {
-    return getTile(position.getX(), position.getY());
+  public Piece getPiece(Position position) {
+    return getPiece(position.getX(), position.getY());
   }
 
-  public Piece getTile(int x, int y) {
+  public Piece getPiece(int x, int y) {
     int index = GameUtil.toIndex(x, y);
     if (GameUtil.isInsideRange(index, 0, GameConstants.BOARD_TILE_COUNT)) {
       return board[index];
