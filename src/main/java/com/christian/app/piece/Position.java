@@ -6,6 +6,7 @@ public class Position {
 
   private int x;
   private int y;
+  private boolean isEnabled;
 
   public Position() {
   }
@@ -54,5 +55,13 @@ public class Position {
 
   public void setY(int y) {
     this.y = y;
+  }
+
+  public boolean isEnabled() {
+    return isEnabled;
+  }
+
+  public void setEnabled(boolean enabled) {
+    isEnabled = enabled;
   }
 }
