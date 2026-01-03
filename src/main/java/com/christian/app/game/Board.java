@@ -8,10 +8,10 @@ import java.util.List;
 
 public class Board {
 
-  private final Tile[] board;
+  private final Piece[] board;
 
   public Board() {
-    board = new Tile[GameConstants.BOARD_TILE_COUNT];
+    board = new Piece[GameConstants.BOARD_TILE_COUNT];
   }
 
   // Methods
@@ -23,15 +23,15 @@ public class Board {
   public void placePiece(Piece piece) {
     int index = GameUtil.toIndex(piece.getPosition());
     if (GameUtil.isInsideRange(index, 0, GameConstants.BOARD_TILE_COUNT)) {
-      board[index].setPiece(piece);
+      board[index] = piece;
     }
   }
 
   public Piece removePiece(Position position) {
     int index = GameUtil.toIndex(position);
     if (GameUtil.isInsideRange(index, 0, GameConstants.BOARD_TILE_COUNT)) {
-      Piece piece = board[index].getPiece();
-      board[index].setPiece(null);
+      Piece piece = board[index];
+      board[index] = null;
       return piece;
     }
     return null;
@@ -39,11 +39,11 @@ public class Board {
 
   // Getter/Setter
 
-  public Tile getTile(Position position) {
+  public Piece getTile(Position position) {
     return getTile(position.getX(), position.getY());
   }
 
-  public Tile getTile(int x, int y) {
+  public Piece getTile(int x, int y) {
     int index = GameUtil.toIndex(x, y);
     if (GameUtil.isInsideRange(index, 0, GameConstants.BOARD_TILE_COUNT)) {
       return board[index];
