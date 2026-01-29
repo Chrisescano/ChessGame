@@ -21,4 +21,10 @@ public class GameConstants {
   public static final int BOARD_HEIGHT = 8;
   public static final int BOARD_TOTAL_SQUARES = BOARD_HEIGHT * BOARD_WIDTH;
 
+  //algebraic notation
+  public static final String WHITE_WINS = "1-0";
+  public static final String BLACK_WINS = "0-1";
+  public static final String DRAW = "1/2-1/2";
+  public static final String ALGEBRAIC_NOTATION_PATTERN = "^([RNBQK])?([a-h])?([1-8])?(x)?([a-h][1-8])([+#])?$";
+
 }
