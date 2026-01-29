@@ -1,9 +1,16 @@
 package com.christian.app.piece;
 
+import com.christian.app.game.Direction;
 import com.christian.app.game.GameUtil;
 import com.christian.app.game.Position;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Piece {
+
+  private final Map<Direction, List<Position>> moves = new HashMap<>();
 
   private Type type;
   private Position position;
@@ -19,12 +26,58 @@ public class Piece {
 
   public static Piece create(char symbol, int x, int y) {
     Type type = Type.toType(symbol);
+    if (type != null || GameUtil.isInsideBoard(x, y)) {
+      Piece piece = new Piece(type, new Position(x, y), symbol, Character.isUpperCase(symbol));
 
-    if (type == null || !GameUtil.isInsideBoard(x, y)) {
-      return null;
+      int depth = switch (piece.getType()) {
+        case PAWN, KNIGHT, KING -> 1;
+        case ROOK, BISHOP, QUEEN -> 7;
+      };
+
+      List<Direction> directions = switch (piece.getType()) {
+        case PAWN -> {
+          yield piece.isWhite ? List.of(Direction.NORTH, Direction.NORTH_EAST, Direction.NORTH_WEST) :
+              List.of(Direction.SOUTH, Direction.SOUTH_EAST, Direction.SOUTH_WEST);
+        }
+        case ROOK -> List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST);
+        case KNIGHT ->
+            List.of(Direction.NORTH_NORTH_EAST, Direction.NORTH_NORTH_WEST, Direction.EAST_EAST_NORTH,
+                Direction.EAST_EAST_NORTH, Direction.SOUTH_SOUTH_EAST, Direction.SOUTH_SOUTH_WEST,
+                Direction.WEST_WEST_NORTH, Direction.WEST_WEST_SOUTH);
+        case BISHOP -> List.of(Direction.NORTH_EAST, Direction.SOUTH_EAST, Direction.SOUTH_WEST,
+            Direction.NORTH_WEST);
+        case QUEEN, KING -> List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST,
+            Direction.NORTH_EAST, Direction.SOUTH_EAST, Direction.SOUTH_WEST, Direction.NORTH_WEST);
+      };
+
+      for (Direction direction : directions) {
+        List<Position> path = new ArrayList<>();
+        for (int i = 1; i <= depth; i++) {
+          int stepX = piece.getPosition().getX() + (i * direction.getX());
+          int stepY = piece.getPosition().getY() + (i * direction.getY());
+          path.add(new Position(stepX, stepY));
+        }
+        piece.getMoves().put(direction, path);
+      }
+
+      return piece;
     }
+    return null;
+  }
 
-    boolean isWhite = Character.isUpperCase(symbol);
-    return new Piece(type, new Position(x, y), symbol, isWhite);
+  public Map<Direction, List<Position>> getMoves() {
+    return moves;
+  }
+
+  public Type getType() {
+    return type;
+  }
+
+  public Position getPosition() {
+    return position;
+  }
+
+  public boolean isWhite() {
+    return isWhite;
   }
 }
