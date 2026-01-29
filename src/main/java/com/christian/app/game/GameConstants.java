@@ -19,5 +19,6 @@ public class GameConstants {
   //board
   public static final int BOARD_WIDTH = 8;
   public static final int BOARD_HEIGHT = 8;
+  public static final int BOARD_TOTAL_SQUARES = BOARD_HEIGHT * BOARD_WIDTH;
 
 }
