@@ -20,7 +20,6 @@ public class MoveManager {
 
     //find piece from user input
 
-
     return null;
   }
 

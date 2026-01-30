@@ -7,15 +7,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Piece {
 
   private final Map<Direction, List<Position>> moves = new HashMap<>();
 
-  private Type type;
-  private Position position;
-  private char symbol;
-  private boolean isWhite;
+  private final Type type;
+  private final Position position;
+  private final char symbol;
+  private final boolean isWhite;
 
   private Piece(Type type, Position position, char symbol, boolean isWhite) {
     this.type = type;
@@ -65,6 +66,30 @@ public class Piece {
     return null;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Piece piece)) {
+      return false;
+    }
+    return symbol == piece.symbol && isWhite == piece.isWhite && type == piece.type
+        && Objects.equals(position, piece.position);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(type, position, symbol, isWhite);
+  }
+
+  @Override
+  public String toString() {
+    return "Piece{" +
+        "type=" + type +
+        ", position=" + position +
+        ", symbol=" + symbol +
+        ", isWhite=" + isWhite +
+        '}';
+  }
+
   public Map<Direction, List<Position>> getMoves() {
     return moves;
   }
@@ -75,6 +100,10 @@ public class Piece {
 
   public Position getPosition() {
     return position;
+  }
+
+  public char getSymbol() {
+    return symbol;
   }
 
   public boolean isWhite() {
