@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 
 public class Piece {
 
@@ -107,6 +109,33 @@ public class Piece {
 
   public void toggledMoved() {
     isMoved = true;
+  }
+
+  public boolean movesContain(Position position) {
+    return pathInfo(position) != null;
+  }
+
+  public Pair<Direction, Pair<List<Position>, Integer>> pathInfo(Position position) {
+    for (Entry<Direction, List<Position>> entry : moves.entrySet()) {
+      int index = entry.getValue().indexOf(position);
+      if (index != -1) {
+        return Pair.of(entry.getKey(), Pair.of(entry.getValue(), index));
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Piece piece)) {
+      return false;
+    }
+    return symbol == piece.symbol && Objects.equals(position, piece.position);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(position, symbol);
   }
 
   public Type getType() {

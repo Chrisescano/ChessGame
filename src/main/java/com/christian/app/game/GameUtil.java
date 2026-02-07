@@ -1,5 +1,7 @@
 package com.christian.app.game;
 
+import com.christian.app.util.Position;
+
 public class GameUtil {
 
   public static boolean isInsideFile(final int value) {
@@ -12,6 +14,10 @@ public class GameUtil {
 
   public static boolean isInsideBoard(final int file, final int rank) {
     return isInsideFile(file) && isInsideRank(rank);
+  }
+
+  public static boolean isInsideBoard(final Position position) {
+    return isInsideBoard(position.getFile(), position.getRank());
   }
 
   /* Helper Methods */

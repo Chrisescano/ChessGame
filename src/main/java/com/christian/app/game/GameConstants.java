@@ -20,4 +20,6 @@ public class GameConstants {
   public static final int BOARD_WIDTH = 8;
   public static final int BOARD_HEIGHT = 8;
 
+  public static final char EMPTY_TILE = Character.MIN_VALUE;
+
 }
