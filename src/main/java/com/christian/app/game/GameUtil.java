@@ -40,6 +40,10 @@ public class GameUtil {
     return (char) ('8' - rankIndex);
   }
 
+  public static String toChessNotation(final Position position) {
+    return String.format("%c%c", GameUtil.toFileChar(position.getFile()), GameUtil.toRankChar(position.getRank()));
+  }
+
   /* Helper Methods */
 
   private static boolean isBetween(final int value, final int min, final int max) {

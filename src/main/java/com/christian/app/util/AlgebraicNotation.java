@@ -25,6 +25,10 @@ public class AlgebraicNotation {
     this.isMate = isMate;
   }
 
+  public Position getEndPosition() {
+    return new Position(endFile, endRank);
+  }
+
   public Type getType() {
     return type;
   }

@@ -23,7 +23,7 @@ public class GameConstants {
   public static final char EMPTY_TILE = Character.MIN_VALUE;
 
   //algebraic notation parser constants
-  public static final String ALGEBRAIC_NOTATION_PATTERN = "^([RNBQK])?([a-h])?([1-8])?(x)?([a-h])([1-8])([+#])$";
+  public static final String ALGEBRAIC_NOTATION_PATTERN = "^([RNBQK])?([a-h])?([1-8])?(x)?([a-h])([1-8])([+#])?$";
 
   public static final int ALG_NOT_TYPE_GROUP = 1;
   public static final int ALG_NOT_START_FILE_GROUP = 2;

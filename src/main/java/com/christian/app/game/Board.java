@@ -74,8 +74,16 @@ public class Board {
     return getSymbol(file, rank) == GameConstants.EMPTY_TILE;
   }
 
+  public boolean isOccupied(int file, int rank) {
+    return getSymbol(file, rank) != GameConstants.EMPTY_TILE;
+  }
+
   public boolean isEmpty(Position position) {
     return isEmpty(position.getFile(), position.getRank());
+  }
+
+  public boolean isOccupied(Position position) {
+    return isOccupied(position.getFile(), position.getRank());
   }
 
   public char getSymbol(Position position) {

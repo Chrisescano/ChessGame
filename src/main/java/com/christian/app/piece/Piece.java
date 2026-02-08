@@ -112,17 +112,36 @@ public class Piece {
   }
 
   public boolean movesContain(Position position) {
-    return pathInfo(position) != null;
+    return directionOf(position) != null;
   }
 
-  public Pair<Direction, Pair<List<Position>, Integer>> pathInfo(Position position) {
+  public Direction directionOf(Position position) {
     for (Entry<Direction, List<Position>> entry : moves.entrySet()) {
       int index = entry.getValue().indexOf(position);
       if (index != -1) {
-        return Pair.of(entry.getKey(), Pair.of(entry.getValue(), index));
+        return entry.getKey();
       }
     }
     return null;
+  }
+
+  public List<Position> getPath(Direction direction) {
+    if (moves.containsKey(direction)) {
+      return moves.get(direction);
+    }
+    return null;
+  }
+
+  public String toPrettyString() {
+    return String.format("%c%c%c", symbol, GameUtil.toFileChar(position.getFile()), GameUtil.toRankChar(position.getRank()));
+  }
+
+  public String toSymbolFileString() {
+    return String.format("%c%c", symbol, GameUtil.toFileChar(position.getFile()));
+  }
+
+  public String toSymbolRankString() {
+    return String.format("%c%c", symbol, GameUtil.toRankChar(position.getRank()));
   }
 
   @Override
@@ -136,6 +155,18 @@ public class Piece {
   @Override
   public int hashCode() {
     return Objects.hash(position, symbol);
+  }
+
+  @Override
+  public String toString() {
+    return "Piece{" +
+        "type=" + type +
+        ", position=" + position +
+        ", symbol=" + symbol +
+        ", isWhite=" + isWhite +
+        ", moves=" + moves +
+        ", isMoved=" + isMoved +
+        '}';
   }
 
   public Type getType() {
