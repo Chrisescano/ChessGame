@@ -4,6 +4,8 @@ import com.christian.app.util.Position;
 
 public class GameUtil {
 
+  //bounds checks
+
   public static boolean isInsideFile(final int value) {
     return isBetween(value, 0, GameConstants.BOARD_WIDTH - 1);
   }
@@ -18,6 +20,24 @@ public class GameUtil {
 
   public static boolean isInsideBoard(final Position position) {
     return isInsideBoard(position.getFile(), position.getRank());
+  }
+
+  //conversion
+
+  public static int toFileIndex(final char fileChar) {
+    return fileChar - 'a';
+  }
+
+  public static char toFileChar(final int fileIndex) {
+    return (char) ('a' + fileIndex);
+  }
+
+  public static int toRankIndex(final char rankChar) {
+    return '8' - rankChar;
+  }
+
+  public static char toRankChar(final int rankIndex) {
+    return (char) ('8' - rankIndex);
   }
 
   /* Helper Methods */
