@@ -30,6 +30,15 @@ public class Piece {
     this.moves = moves;
   }
 
+  public static Piece create(final char symbol, final String chessNotation) {
+    if (chessNotation != null && chessNotation.length() == 2) {
+      int file = GameUtil.toFileIndex(chessNotation.charAt(0));
+      int rank = GameUtil.toRankIndex(chessNotation.charAt(1));
+      return create(symbol, file, rank);
+    }
+    return null;
+  }
+
   public static Piece create(final char symbol, final int file, final int rank) {
     final Type type = Type.toType(symbol);
     if (type != null && GameUtil.isInsideBoard(file, rank)) {
@@ -130,10 +139,6 @@ public class Piece {
       return moves.get(direction);
     }
     return null;
-  }
-
-  public String toPrettyString() {
-    return String.format("%c%c%c", symbol, GameUtil.toFileChar(position.getFile()), GameUtil.toRankChar(position.getRank()));
   }
 
   public String toSymbolFileString() {

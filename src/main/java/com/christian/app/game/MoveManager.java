@@ -2,7 +2,10 @@ package com.christian.app.game;
 
 import com.christian.app.parser.AlgebraicNotationParser;
 import com.christian.app.piece.Piece;
+import com.christian.app.piece.Type;
 import com.christian.app.util.AlgebraicNotation;
+import com.christian.app.util.MoveRecord;
+import com.christian.app.util.MoveStatus;
 import com.christian.app.util.Position;
 import java.util.List;
 import java.util.Set;
@@ -13,6 +16,7 @@ public class MoveManager {
   private final Board board;
   public final Boolean activeColor;
   private final AlgebraicNotationParser parser = new AlgebraicNotationParser();
+  private MoveRecord moveRecord;
 
   public MoveManager(final Board board, final Boolean activeColor) {
     this.board = board;
@@ -21,35 +25,35 @@ public class MoveManager {
 
   public boolean isValidMove(final String move) {
     AlgebraicNotation userMove = parser.parse(move);
-    List<Piece> results;
-
     if (userMove != null) {
-      results = searchBoard(activeColor, userMove);
+      List<Piece> results = searchBoard(activeColor, userMove);
       if (!results.isEmpty()) {
-        for (int i = results.size() - 1; i >= 0; i--) {
-          if (!isLegalMove(results.get(i), userMove.getEndPosition())) {
-            results.remove(i);
+        results = results.stream().filter(piece -> isLegalMove(piece, userMove.getEndPosition())).toList();
+        if (!results.isEmpty()) {
+          if (results.size() == 1) {
+            moveRecord = new MoveRecord(MoveStatus.LEGAL_MOVE, move, results.getFirst(), userMove.getEndPosition(), Character.MIN_VALUE);
+            return true;
+          } else {
+            Set<Integer> fileSet = results.stream().map(piece -> piece.getPosition().getFile()).collect(
+                Collectors.toSet());
+            boolean printPieceFiles = fileSet.size() == results.size();
+            String log = String.format(
+                "for %s did you mean %s", move, results.stream()
+                    .map(piece -> printPieceFiles ? piece.toSymbolFileString() : piece.toSymbolRankString())
+                    .map(prettyString -> prettyString + GameUtil.toChessNotation(userMove.getEndPosition()))
+                    .collect(Collectors.joining(" or "))
+            );
+            moveRecord = new MoveRecord(MoveStatus.AMBIGUOUS_MOVE, log, null, userMove.getEndPosition(), Character.MIN_VALUE);
           }
+        } else {
+          moveRecord = new MoveRecord(MoveStatus.NO_PIECES_FOUND, move, null, userMove.getEndPosition(), Character.MIN_VALUE);
         }
+      } else {
+        moveRecord = new MoveRecord(MoveStatus.NO_PIECES_FOUND, move, null, userMove.getEndPosition(), Character.MIN_VALUE);
       }
     } else {
-      results = null;
+      moveRecord = new MoveRecord(MoveStatus.UNPARSEABLE_MOVE, move, null, null, Character.MIN_VALUE);
     }
-
-    if (results != null && !results.isEmpty()) {
-      if (results.size() > 1) { //ambiguous move encountered
-        Set<Integer> fileSet = results.stream().map(piece -> piece.getPosition().getRank()).collect(
-            Collectors.toSet());
-        System.out.printf("Did you mean: %s\n",
-            results.stream().map(piece -> String.format("%s%s",
-                    fileSet.size() == results.size() ? piece.toSymbolFileString() : piece.toSymbolRankString(),
-                    GameUtil.toChessNotation(userMove.getEndPosition())))
-                .collect(Collectors.joining(" or ")));
-        return false;
-      }
-      return true;
-    }
-
     return false;
   }
 
@@ -59,8 +63,18 @@ public class MoveManager {
     path = path.subList(0, path.indexOf(move) + 1);
 
     boolean isMoveLegal = false;
-    for (Position tile : path) {
+    for (int i = 0; i < path.size(); i++) {
+      Position tile = path.get(i);
       if (GameUtil.isInsideBoard(tile)) {
+        if (piece.getType() == Type.PAWN && i == 1) {
+          if (piece.isMoved()) {
+            isMoveLegal = false;
+          } else {
+            isMoveLegal = board.isEmpty(tile);
+          }
+          break;
+        }
+
         if (board.isOccupied(tile)) {
           Piece tilePiece = board.getPiece(tile);
           isMoveLegal = piece.isWhite() ^ tilePiece.isWhite();
@@ -87,4 +101,7 @@ public class MoveManager {
     );
   }
 
+  public MoveRecord getMoveRecord() {
+    return moveRecord;
+  }
 }

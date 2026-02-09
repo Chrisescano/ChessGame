@@ -5,6 +5,10 @@ public class Pair<T, R> {
   T first;
   R second;
 
+  public Pair() {
+
+  }
+
   public Pair(T first, R second) {
     this.first = first;
     this.second = second;
@@ -12,6 +16,11 @@ public class Pair<T, R> {
 
   public static <T, R> Pair<T, R> of(T first, R second) {
     return new Pair<>(first, second);
+  }
+
+  public void set(T first, R second) {
+    this.first = first;
+    this.second = second;
   }
 
   public T getFirst() {

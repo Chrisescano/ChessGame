@@ -21,6 +21,9 @@ public class MoveManagerTest {
   public void testMethodSetUp() {
     board.clear();
   }
+  /*
+  regular move testing
+   */
 
   @Test
   public void testQueenMovingOnEmptyBoard() {
@@ -63,6 +66,53 @@ public class MoveManagerTest {
     boolean isValidMove = moveManager.isValidMove(move);
 
     Assert.assertTrue(isValidMove);
+  }
+
+  /*
+  pawn move tests
+   */
+
+  @Test
+  public void testPawnMovingForward() {
+    final String move = "a3";
+    board.add(Piece.create('P', "a2"));
+
+    boolean isValidMove = moveManager.isValidMove(move);
+
+    Assert.assertTrue(isValidMove);
+  }
+
+  @Test
+  public void testPawnCantMoveForward() {
+    final String move = "a3";
+    board.add(Piece.create('P', "a2"));
+    board.add(Piece.create('Q', "a3"));
+
+    boolean isValidMove = moveManager.isValidMove(move);
+
+    Assert.assertFalse(isValidMove);
+  }
+
+  @Test
+  public void testPawnDoubleJumping() {
+    final String move = "a4";
+    board.add(Piece.create('P', "a2"));
+
+    boolean isValidMove = moveManager.isValidMove(move);
+
+    Assert.assertTrue(isValidMove);
+  }
+
+  @Test
+  public void testPawnCantDoubleJumpIfMovedAlready() {
+    final String move = "a4";
+    Piece pawn = Piece.create('P', "a2");
+    board.add(pawn);
+    pawn.toggledMoved();
+
+    boolean isValidMove = moveManager.isValidMove(move);
+
+    Assert.assertFalse(isValidMove);
   }
 
 }
