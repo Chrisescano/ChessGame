@@ -115,4 +115,25 @@ public class MoveManagerTest {
     Assert.assertFalse(isValidMove);
   }
 
+  @Test
+  public void testPawnCanCaptureSideways() {
+    final String move = "b3";
+    board.add(Piece.create('P', "a2"));
+    board.add(Piece.create('q', "b3"));
+
+    boolean isValidMove = moveManager.isValidMove(move);
+
+    Assert.assertTrue(isValidMove);
+  }
+
+  @Test
+  public void testPawnCantCaptureSideways() {
+    final String move = "b3";
+    board.add(Piece.create('P', "a2"));
+
+    boolean isValidMove = moveManager.isValidMove(move);
+
+    Assert.assertFalse(isValidMove);
+  }
+
 }

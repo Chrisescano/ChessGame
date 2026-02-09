@@ -28,31 +28,40 @@ public class MoveManager {
     if (userMove != null) {
       List<Piece> results = searchBoard(activeColor, userMove);
       if (!results.isEmpty()) {
-        results = results.stream().filter(piece -> isLegalMove(piece, userMove.getEndPosition())).toList();
+        results = results.stream().filter(piece -> isLegalMove(piece, userMove.getEndPosition()))
+            .toList();
         if (!results.isEmpty()) {
           if (results.size() == 1) {
-            moveRecord = new MoveRecord(MoveStatus.LEGAL_MOVE, move, results.getFirst(), userMove.getEndPosition(), Character.MIN_VALUE);
+            moveRecord = new MoveRecord(MoveStatus.LEGAL_MOVE, move, results.getFirst(),
+                userMove.getEndPosition(), Character.MIN_VALUE);
             return true;
           } else {
-            Set<Integer> fileSet = results.stream().map(piece -> piece.getPosition().getFile()).collect(
-                Collectors.toSet());
+            Set<Integer> fileSet = results.stream().map(piece -> piece.getPosition().getFile())
+                .collect(
+                    Collectors.toSet());
             boolean printPieceFiles = fileSet.size() == results.size();
             String log = String.format(
                 "for %s did you mean %s", move, results.stream()
-                    .map(piece -> printPieceFiles ? piece.toSymbolFileString() : piece.toSymbolRankString())
-                    .map(prettyString -> prettyString + GameUtil.toChessNotation(userMove.getEndPosition()))
+                    .map(piece -> printPieceFiles ? piece.toSymbolFileString()
+                        : piece.toSymbolRankString())
+                    .map(prettyString -> prettyString + GameUtil.toChessNotation(
+                        userMove.getEndPosition()))
                     .collect(Collectors.joining(" or "))
             );
-            moveRecord = new MoveRecord(MoveStatus.AMBIGUOUS_MOVE, log, null, userMove.getEndPosition(), Character.MIN_VALUE);
+            moveRecord = new MoveRecord(MoveStatus.AMBIGUOUS_MOVE, log, null,
+                userMove.getEndPosition(), Character.MIN_VALUE);
           }
         } else {
-          moveRecord = new MoveRecord(MoveStatus.NO_PIECES_FOUND, move, null, userMove.getEndPosition(), Character.MIN_VALUE);
+          moveRecord = new MoveRecord(MoveStatus.NO_PIECES_FOUND, move, null,
+              userMove.getEndPosition(), Character.MIN_VALUE);
         }
       } else {
-        moveRecord = new MoveRecord(MoveStatus.NO_PIECES_FOUND, move, null, userMove.getEndPosition(), Character.MIN_VALUE);
+        moveRecord = new MoveRecord(MoveStatus.NO_PIECES_FOUND, move, null,
+            userMove.getEndPosition(), Character.MIN_VALUE);
       }
     } else {
-      moveRecord = new MoveRecord(MoveStatus.UNPARSEABLE_MOVE, move, null, null, Character.MIN_VALUE);
+      moveRecord = new MoveRecord(MoveStatus.UNPARSEABLE_MOVE, move, null, null,
+          Character.MIN_VALUE);
     }
     return false;
   }
@@ -66,13 +75,18 @@ public class MoveManager {
     for (int i = 0; i < path.size(); i++) {
       Position tile = path.get(i);
       if (GameUtil.isInsideBoard(tile)) {
-        if (piece.getType() == Type.PAWN && i == 1) {
-          if (piece.isMoved()) {
-            isMoveLegal = false;
-          } else {
-            isMoveLegal = board.isEmpty(tile);
+        if (piece.getType() == Type.PAWN) {
+          if ((direction == Direction.NORTH || direction == Direction.SOUTH) && i == 1) {
+            if (piece.isMoved()) {
+              isMoveLegal = false;
+            } else {
+              isMoveLegal = board.isEmpty(tile);
+            }
+            break;
+          } else if (direction != Direction.NORTH && direction != Direction.SOUTH) {
+            isMoveLegal = isEnemies(board.getSymbol(tile), piece.getSymbol());
+            break;
           }
-          break;
         }
 
         if (board.isOccupied(tile)) {
@@ -99,6 +113,12 @@ public class MoveManager {
         algebraicNotation.getStartRank(),
         algebraicNotation.getEndPosition()
     );
+  }
+
+  private boolean isEnemies(char symbolA, char symbolB) {
+    return (symbolA != GameConstants.EMPTY_TILE)
+        && (symbolB != GameConstants.EMPTY_TILE)
+        && (Character.isUpperCase(symbolA) ^ Character.isUpperCase(symbolB));
   }
 
   public MoveRecord getMoveRecord() {
