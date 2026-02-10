@@ -1,6 +1,8 @@
 package com.christian.app.game;
 
 import com.christian.app.piece.Piece;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -8,17 +10,21 @@ import org.testng.annotations.Test;
 
 public class MoveManagerTest {
 
+  private static final Logger log = LoggerFactory.getLogger(MoveManagerTest.class);
   private Board board;
+  private Boolean activeColor;
   private MoveManager moveManager;
 
   @BeforeClass
   public void setUp() {
     board = new Board();
-    moveManager = new MoveManager(board, true);
+    activeColor = Boolean.TRUE;
+    moveManager = new MoveManager(board, activeColor);
   }
 
   @BeforeMethod
   public void testMethodSetUp() {
+    activeColor = Boolean.TRUE;
     board.clear();
   }
   /*
@@ -134,6 +140,24 @@ public class MoveManagerTest {
     boolean isValidMove = moveManager.isValidMove(move);
 
     Assert.assertFalse(isValidMove);
+  }
+
+  @Test
+  public void testPawnEnPassantCapture() {
+    Piece pawnA = Piece.create('P', "a2");
+    Piece pawnB = Piece.create('p', "b4");
+    board.add(pawnA);
+    board.add(pawnB);
+
+    boolean isValidMove = moveManager.isValidMove("a4");
+
+    Assert.assertTrue(isValidMove);
+    pawnA.getPosition().setRank(4);
+    activeColor = Boolean.FALSE;
+
+    isValidMove = moveManager.isValidMove("a3");
+
+    Assert.assertTrue(isValidMove);
   }
 
 }
