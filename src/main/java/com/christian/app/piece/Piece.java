@@ -135,7 +135,7 @@ public class Piece {
   }
 
   public List<Position> getPath(Direction direction) {
-    if (moves.containsKey(direction)) {
+    if (direction != null && moves.containsKey(direction)) {
       return moves.get(direction);
     }
     return null;

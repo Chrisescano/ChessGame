@@ -36,7 +36,7 @@ public class MoveManagerTest {
     final String move = "Qh8";
     board.add(Piece.create('Q', 0, 0));
 
-    boolean isValidMove = moveManager.isValidMove(move);
+    boolean isValidMove = moveManager.isLegalMove(move);
 
     Assert.assertTrue(isValidMove);
   }
@@ -47,7 +47,7 @@ public class MoveManagerTest {
     board.add(Piece.create('Q', 0, 0));
     board.add(Piece.create('Q', 7, 7));
 
-    boolean isValidMove = moveManager.isValidMove(move);
+    boolean isValidMove = moveManager.isLegalMove(move);
 
     Assert.assertFalse(isValidMove);
   }
@@ -58,7 +58,7 @@ public class MoveManagerTest {
     board.add(Piece.create('Q', 0, 0));
     board.add(Piece.create('Q', 7, 7));
 
-    boolean isValidMove = moveManager.isValidMove(move);
+    boolean isValidMove = moveManager.isLegalMove(move);
 
     Assert.assertTrue(isValidMove);
   }
@@ -69,7 +69,7 @@ public class MoveManagerTest {
     board.add(Piece.create('Q', 0, 0));
     board.add(Piece.create('Q', 0, 7));
 
-    boolean isValidMove = moveManager.isValidMove(move);
+    boolean isValidMove = moveManager.isLegalMove(move);
 
     Assert.assertTrue(isValidMove);
   }
@@ -83,7 +83,7 @@ public class MoveManagerTest {
     final String move = "a3";
     board.add(Piece.create('P', "a2"));
 
-    boolean isValidMove = moveManager.isValidMove(move);
+    boolean isValidMove = moveManager.isLegalMove(move);
 
     Assert.assertTrue(isValidMove);
   }
@@ -92,9 +92,9 @@ public class MoveManagerTest {
   public void testPawnCantMoveForward() {
     final String move = "a3";
     board.add(Piece.create('P', "a2"));
-    board.add(Piece.create('Q', "a3"));
+    board.add(Piece.create('q', "a3"));
 
-    boolean isValidMove = moveManager.isValidMove(move);
+    boolean isValidMove = moveManager.isLegalMove(move);
 
     Assert.assertFalse(isValidMove);
   }
@@ -104,7 +104,7 @@ public class MoveManagerTest {
     final String move = "a4";
     board.add(Piece.create('P', "a2"));
 
-    boolean isValidMove = moveManager.isValidMove(move);
+    boolean isValidMove = moveManager.isLegalMove(move);
 
     Assert.assertTrue(isValidMove);
   }
@@ -116,7 +116,7 @@ public class MoveManagerTest {
     board.add(pawn);
     pawn.toggledMoved();
 
-    boolean isValidMove = moveManager.isValidMove(move);
+    boolean isValidMove = moveManager.isLegalMove(move);
 
     Assert.assertFalse(isValidMove);
   }
@@ -127,7 +127,7 @@ public class MoveManagerTest {
     board.add(Piece.create('P', "a2"));
     board.add(Piece.create('q', "b3"));
 
-    boolean isValidMove = moveManager.isValidMove(move);
+    boolean isValidMove = moveManager.isLegalMove(move);
 
     Assert.assertTrue(isValidMove);
   }
@@ -137,7 +137,7 @@ public class MoveManagerTest {
     final String move = "b3";
     board.add(Piece.create('P', "a2"));
 
-    boolean isValidMove = moveManager.isValidMove(move);
+    boolean isValidMove = moveManager.isLegalMove(move);
 
     Assert.assertFalse(isValidMove);
   }
@@ -149,13 +149,13 @@ public class MoveManagerTest {
     board.add(pawnA);
     board.add(pawnB);
 
-    boolean isValidMove = moveManager.isValidMove("a4");
+    boolean isValidMove = moveManager.isLegalMove("a4");
 
     Assert.assertTrue(isValidMove);
     pawnA.getPosition().setRank(4);
     activeColor = Boolean.FALSE;
 
-    isValidMove = moveManager.isValidMove("a3");
+    isValidMove = moveManager.isLegalMove("a3");
 
     Assert.assertTrue(isValidMove);
   }

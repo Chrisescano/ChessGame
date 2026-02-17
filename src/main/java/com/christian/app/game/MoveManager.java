@@ -26,26 +26,26 @@ public class MoveManager {
     this.activeColor = activeColor;
   }
 
-  public boolean isValidMove(final String move) {
-    AlgebraicNotation userMove = parser.parse(move);
-    if (userMove == null) {
+  public boolean isLegalMove(final String move) {
+    AlgebraicNotation algNot = parser.parse(move);
+    if (algNot == null) {
       moveRecord = new MoveRecord(MoveStatus.UNPARSEABLE_MOVE, move, null, null,
           Character.MIN_VALUE);
       return false;
     }
 
-    List<Piece> results = searchBoard(activeColor, userMove);
+    List<Piece> results = searchBoard(activeColor, algNot);
     if (results.isEmpty()) {
       moveRecord = new MoveRecord(MoveStatus.NO_PIECES_FOUND, move, null,
-          userMove.getEndPosition(), Character.MIN_VALUE);
+          algNot.getEndPosition(), Character.MIN_VALUE);
       return false;
     }
 
-    results = results.stream().filter(piece -> isLegalMove(piece, userMove.getEndPosition()))
+    results = results.stream().filter(piece -> isLegalPieceMove(piece, algNot.getEndPosition()))
         .toList();
     if (results.isEmpty()) {
       moveRecord = new MoveRecord(MoveStatus.NO_PIECES_FOUND, move, null,
-          userMove.getEndPosition(), Character.MIN_VALUE);
+          algNot.getEndPosition(), Character.MIN_VALUE);
       return false;
     } else if (results.size() > 1) {
       Set<Integer> fileSet = results.stream().map(piece -> piece.getPosition().getFile())
@@ -57,20 +57,20 @@ public class MoveManager {
               .map(piece -> printPieceFiles ? piece.toSymbolFileString()
                   : piece.toSymbolRankString())
               .map(prettyString -> prettyString + GameUtil.toChessNotation(
-                  userMove.getEndPosition()))
+                  algNot.getEndPosition()))
               .collect(Collectors.joining(" or "))
       );
       moveRecord = new MoveRecord(MoveStatus.AMBIGUOUS_MOVE, log, null,
-          userMove.getEndPosition(), Character.MIN_VALUE);
+          algNot.getEndPosition(), Character.MIN_VALUE);
       return false;
     }
 
     moveRecord = new MoveRecord(MoveStatus.LEGAL_MOVE, move, results.getFirst(),
-        userMove.getEndPosition(), Character.MIN_VALUE);
+        algNot.getEndPosition(), Character.MIN_VALUE);
     return true;
   }
 
-  private boolean isLegalMove(Piece piece, Position move) {
+  private boolean isLegalPieceMove(Piece piece, Position move) {
     if (moveRecord.isMoveValid()) {
       if (enPassantTTL > 0) {
         enPassantTTL--;
@@ -88,14 +88,13 @@ public class MoveManager {
       Position tile = path.get(i);
       if (GameUtil.isInsideBoard(tile)) {
         if (piece.getType() == Type.PAWN) {
-          if ((direction == Direction.NORTH || direction == Direction.SOUTH)
-              && i == 1) { //double jump
-            isMoveLegal = isLegalPawnDoubleJump(piece, tile);
-            break;
-          } else if (direction != Direction.NORTH && direction != Direction.SOUTH) { //capturing
-            isMoveLegal = isLegalPawnCapture(piece, tile);
-            break;
-          }
+          isMoveLegal = isLegalPawnMove(piece, tile, direction, i);
+          continue;
+        }
+
+        if (piece.getType() == Type.KING) {
+          isMoveLegal = isLegalKingMove(piece, tile, direction);
+          continue;
         }
 
         if (board.isOccupied(tile)) {
@@ -124,24 +123,27 @@ public class MoveManager {
     );
   }
 
-  private boolean isLegalPawnDoubleJump(Piece piece, Position move) {
-    if (!piece.isMoved()) {
-      if (board.isEmpty(move)) {
+  private boolean isLegalPawnMove(Piece piece, Position move, Direction direction, int index) {
+    if (direction == Direction.NORTH || direction == Direction.SOUTH) {
+      if (index == 1 && !piece.isMoved() && board.isEmpty(move)) {
         enPassantTile = move;
         enPassantTTL = 1;
+        return true;
+      } else if (index == 0) {
+        return board.isEmpty(move);
+      }
+    } else { //capturing
+      if (board.isOccupied(move)) {
+        return piece.isWhite() ^ board.getPiece(move).isWhite();
+      } else if (enPassantTile != null && enPassantTile.equals(move)) {
+        enPassantTile = null;
         return true;
       }
     }
     return false;
   }
 
-  private boolean isLegalPawnCapture(Piece piece, Position move) {
-    if (board.isOccupied(move)) {
-      return piece.isWhite() ^ board.getPiece(move).isWhite();
-    } else if (enPassantTile != null && enPassantTile.equals(move)) {
-      enPassantTile = null;
-      return true;
-    }
+  private boolean isLegalKingMove(Piece piece, Position move, Direction direction) {
     return false;
   }
 
