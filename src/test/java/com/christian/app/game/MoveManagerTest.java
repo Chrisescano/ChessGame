@@ -1,6 +1,9 @@
 package com.christian.app.game;
 
 import com.christian.app.piece.Piece;
+import com.christian.app.util.MoveRecord;
+import com.christian.app.util.MoveStatus;
+import com.christian.app.util.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
@@ -12,152 +15,200 @@ public class MoveManagerTest {
 
   private static final Logger log = LoggerFactory.getLogger(MoveManagerTest.class);
   private Board board;
-  private Boolean activeColor;
   private MoveManager moveManager;
 
   @BeforeClass
   public void setUp() {
     board = new Board();
-    activeColor = Boolean.TRUE;
-    moveManager = new MoveManager(board, activeColor);
   }
 
   @BeforeMethod
   public void testMethodSetUp() {
-    activeColor = Boolean.TRUE;
     board.clear();
+    moveManager = new MoveManager(board, 0, true);
   }
-  /*
-  regular move testing
-   */
 
   @Test
-  public void testQueenMovingOnEmptyBoard() {
-    final String move = "Qh8";
-    board.add(Piece.create('Q', 0, 0));
+  public void testUnparseableMove() {
+    String move = "x";
+    boolean result = moveManager.isMoveLegal("x");
+    int moveRecordId = moveManager.getLastMoveRecordId();
+    MoveRecord expected = MoveRecord.create(moveRecordId, 0, true, MoveStatus.UNPARSEABLE_MOVE, null, null, null, move, false, false);
+    Assert.assertFalse(result);
+    Assert.assertEquals(moveManager.getLastMoveRecord(), expected);
+  }
 
-    boolean isValidMove = moveManager.isLegalMove(move);
+  @Test
+  public void testNoPiecesFound() {
+    String move = "a3";
+    boolean result = moveManager.isMoveLegal(move);
+    int moveRecordId = moveManager.getLastMoveRecordId();
+    MoveRecord expected = MoveRecord.create(moveRecordId, 0, true, MoveStatus.NO_PIECES_FOUND, null, null, null, move, false, false);
+    Assert.assertFalse(result);
+    Assert.assertEquals(moveManager.getLastMoveRecord(), expected);
+  }
 
-    Assert.assertTrue(isValidMove);
+  @Test
+  public void testNoLegalPiecesFound() {
+    board.add(Piece.create('Q', "a2"));
+    board.add(Piece.create('Q', "a1"));
+    board.add(Piece.create('p', "a3"));
+    String move = "Qa5";
+    boolean result = moveManager.isMoveLegal(move);
+    int moveRecordId = moveManager.getLastMoveRecordId();
+    Position movePosition = Position.create("a5");
+    MoveRecord expected = MoveRecord.create(moveRecordId, 0, true, MoveStatus.NO_LEGAL_PIECES_FOUND, null, null, movePosition, move, false, false);
+    Assert.assertFalse(result);
+    Assert.assertEquals(moveManager.getLastMoveRecord(), expected);
   }
 
   @Test
   public void testAmbiguousMove() {
-    final String move = "Qh8";
-    board.add(Piece.create('Q', 0, 0));
-    board.add(Piece.create('Q', 7, 7));
-
-    boolean isValidMove = moveManager.isLegalMove(move);
-
-    Assert.assertFalse(isValidMove);
+    board.add(Piece.create('R', "a1"));
+    board.add(Piece.create('R', "a7"));
+    String move = "Ra3";
+    boolean result = moveManager.isMoveLegal(move);
+    int moveRecordId = moveManager.getLastMoveRecordId();
+    Position movePosition = Position.create("a3");
+    String extraInfo = "did you mean [R1a3] or [R7a3]";
+    MoveRecord expected = MoveRecord.create(moveRecordId, 0, true, MoveStatus.AMBIGUOUS_MOVE, null, null, movePosition, extraInfo, false, false);
+    Assert.assertFalse(result);
+    Assert.assertEquals(moveManager.getLastMoveRecord(), expected);
   }
 
   @Test
-  public void testNonAmbiguousMove() {
-    final String move = "Qah8";
-    board.add(Piece.create('Q', 0, 0));
-    board.add(Piece.create('Q', 7, 7));
-
-    boolean isValidMove = moveManager.isLegalMove(move);
-
-    Assert.assertTrue(isValidMove);
+  public void testLegalMoveToEmptyTile() {
+    Piece rook = Piece.create('R', "a1");
+    board.add(rook);
+    String move = "Ra3";
+    boolean result = moveManager.isMoveLegal(move);
+    int moveRecordId = moveManager.getLastMoveRecordId();
+    Position movePosition = Position.create("a3");
+    MoveRecord expected = MoveRecord.create(moveRecordId, 0, true, MoveStatus.LEGAL_MOVE, rook, null, movePosition, "a3", false, false);
+    Assert.assertTrue(result);
+    Assert.assertEquals(moveManager.getLastMoveRecord(), expected);
   }
 
   @Test
-  public void testNonAmbiguousMove2() {
-    final String move = "Q1a3";
-    board.add(Piece.create('Q', 0, 0));
-    board.add(Piece.create('Q', 0, 7));
-
-    boolean isValidMove = moveManager.isLegalMove(move);
-
-    Assert.assertTrue(isValidMove);
-  }
-
-  /*
-  pawn move tests
-   */
-
-  @Test
-  public void testPawnMovingForward() {
-    final String move = "a3";
-    board.add(Piece.create('P', "a2"));
-
-    boolean isValidMove = moveManager.isLegalMove(move);
-
-    Assert.assertTrue(isValidMove);
+  public void testLegalMoveToCapture() {
+    Piece rook = Piece.create('R', "a1");
+    Piece queen = Piece.create('q', "a3");
+    board.add(rook);
+    board.add(queen);
+    String move = "Rxa3";
+    boolean result = moveManager.isMoveLegal(move);
+    int moveRecordId = moveManager.getLastMoveRecordId();
+    Position movePosition = Position.create("a3");
+    MoveRecord expected = MoveRecord.create(moveRecordId, 0, true, MoveStatus.LEGAL_CAPTURE, rook, queen, movePosition, "a3", false, false);
+    Assert.assertTrue(result);
+    Assert.assertEquals(moveManager.getLastMoveRecord(), expected);
   }
 
   @Test
-  public void testPawnCantMoveForward() {
-    final String move = "a3";
-    board.add(Piece.create('P', "a2"));
-    board.add(Piece.create('q', "a3"));
+  public void testIllegalMovePathBlocked() {
+    Piece rook = Piece.create('R', "a1");
+    Piece queen = Piece.create('q', "a2");
+    board.add(rook);
+    board.add(queen);
+    String move = "Ra3";
+    boolean result = moveManager.isMoveLegal(move);
+    int moveRecordId = moveManager.getLastMoveRecordId();
+    Position movePosition = Position.create("a3");
+    String extraInfo = "path blocked";
+    MoveRecord expected = MoveRecord.create(moveRecordId, 0, true, MoveStatus.ILLEGAL_MOVE, rook, queen, movePosition, extraInfo, false, false );
+    Assert.assertFalse(result);
+    Assert.assertEquals(moveManager.getLastMoveRecord(), expected);
+  }
 
-    boolean isValidMove = moveManager.isLegalMove(move);
-
-    Assert.assertFalse(isValidMove);
+  @Test
+  public void testPawnLegalMovingForward() {
+    Piece pawn = Piece.create('P', "a2");
+    board.add(pawn);
+    String move = "a3";
+    boolean result = moveManager.isMoveLegal(move);
+    int moveRecordId = moveManager.getLastMoveRecordId();
+    Position movePosition = Position.create(move);
+    MoveRecord expected = MoveRecord.create(moveRecordId, 0, true, MoveStatus.LEGAL_MOVE, pawn, null, movePosition, move, false, false);
+    Assert.assertTrue(result);
+    Assert.assertEquals(moveManager.getLastMoveRecord(), expected);
   }
 
   @Test
   public void testPawnDoubleJumping() {
-    final String move = "a4";
-    board.add(Piece.create('P', "a2"));
-
-    boolean isValidMove = moveManager.isLegalMove(move);
-
-    Assert.assertTrue(isValidMove);
-  }
-
-  @Test
-  public void testPawnCantDoubleJumpIfMovedAlready() {
-    final String move = "a4";
     Piece pawn = Piece.create('P', "a2");
     board.add(pawn);
+    String move = "a4";
+    boolean result = moveManager.isMoveLegal(move);
+    int moveRecordId = moveManager.getLastMoveRecordId();
+    Position movePosition = Position.create(move);
+    MoveRecord expected = MoveRecord.create(moveRecordId, 0, true, MoveStatus.LEGAL_DOUBLE_JUMP, pawn, null, movePosition, move, false, false);
+    Assert.assertTrue(result);
+    Assert.assertEquals(moveManager.getLastMoveRecord(), expected);
+  }
+
+  @Test
+  public void testPawnIllegalDoubleJump() {
+    Piece pawn = Piece.create('P', "a2");
     pawn.toggledMoved();
-
-    boolean isValidMove = moveManager.isLegalMove(move);
-
-    Assert.assertFalse(isValidMove);
+    board.add(pawn);
+    String move = "a4";
+    boolean result = moveManager.isMoveLegal(move);
+    int moveRecordId = moveManager.getLastMoveRecordId();
+    Position movePosition = Position.create(move);
+    MoveRecord expected = MoveRecord.create(moveRecordId, 0, true, MoveStatus.ILLEGAL_MOVE, pawn, null, movePosition, move, false, false);
+    Assert.assertFalse(result);
+    Assert.assertEquals(moveManager.getLastMoveRecord(), expected);
   }
 
   @Test
-  public void testPawnCanCaptureSideways() {
-    final String move = "b3";
-    board.add(Piece.create('P', "a2"));
-    board.add(Piece.create('q', "b3"));
-
-    boolean isValidMove = moveManager.isLegalMove(move);
-
-    Assert.assertTrue(isValidMove);
+  public void testPawnCapturing() {
+    Piece pawnA = Piece.create('P', "a2");
+    Piece pawnB = Piece.create('p', "b3");
+    board.add(pawnA);
+    board.add(pawnB);
+    String move = "b3";
+    boolean result = moveManager.isMoveLegal(move);
+    int moveRecordId = moveManager.getLastMoveRecordId();
+    Position movePositon = Position.create(move);
+    MoveRecord expected = MoveRecord.create(moveRecordId, 0, true, MoveStatus.LEGAL_CAPTURE, pawnA, pawnB, movePositon, move, false, false);
+    Assert.assertTrue(result);
+    Assert.assertEquals(moveManager.getLastMoveRecord(), expected);
   }
 
   @Test
-  public void testPawnCantCaptureSideways() {
-    final String move = "b3";
-    board.add(Piece.create('P', "a2"));
-
-    boolean isValidMove = moveManager.isLegalMove(move);
-
-    Assert.assertFalse(isValidMove);
+  public void testPawnIllegalCapture() {
+    Piece pawn = Piece.create('P', "a2");
+    board.add(pawn);
+    String move = "b3";
+    boolean result = moveManager.isMoveLegal(move);
+    int moveRecordId = moveManager.getLastMoveRecordId();
+    Position movePositon = Position.create(move);
+    MoveRecord expected = MoveRecord.create(moveRecordId, 0, true, MoveStatus.ILLEGAL_MOVE, pawn, null, movePositon, move, false, false);
+    Assert.assertFalse(result);
+    Assert.assertEquals(moveManager.getLastMoveRecord(), expected);
   }
 
   @Test
-  public void testPawnEnPassantCapture() {
+  public void testPawnEnPassant() {
+    //Given
     Piece pawnA = Piece.create('P', "a2");
     Piece pawnB = Piece.create('p', "b4");
     board.add(pawnA);
     board.add(pawnB);
+    String move = "a3";
 
-    boolean isValidMove = moveManager.isLegalMove("a4");
+    //When
+    Assert.assertTrue(moveManager.isMoveLegal("a4"));
+    Position pawnAMove = Position.create("a4");
+    pawnA.getPosition().setFile(pawnAMove.getFile());
+    pawnA.getPosition().setRank(pawnAMove.getRank());
+    boolean result = moveManager.isMoveLegal(move);
 
-    Assert.assertTrue(isValidMove);
-    pawnA.getPosition().setRank(4);
-    activeColor = Boolean.FALSE;
-
-    isValidMove = moveManager.isLegalMove("a3");
-
-    Assert.assertTrue(isValidMove);
+    //Then
+    int moveRecordId = moveManager.getLastMoveRecordId();
+    Position movePositon = Position.create(move);
+    MoveRecord expected = MoveRecord.create(moveRecordId, 1, false, MoveStatus.LEGAL_EN_PASSANT, pawnB, pawnA, movePositon, move, false, false);
+    Assert.assertTrue(result);
+    Assert.assertEquals(moveManager.getLastMoveRecord(), expected);
   }
-
 }

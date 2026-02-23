@@ -1,5 +1,6 @@
 package com.christian.app.util;
 
+import com.christian.app.game.GameUtil;
 import java.util.Objects;
 
 public class Position {
@@ -7,9 +8,26 @@ public class Position {
   private int file;
   private int rank;
 
+  public Position(Position position) {
+    this(position.getFile(), position.getRank());
+  }
+
   public Position(final int file, final int rank) {
     this.file = file;
     this.rank = rank;
+  }
+
+  public static Position create(String chessNotation) {
+    if (chessNotation != null && chessNotation.length() == 2) {
+      int file = GameUtil.toFileIndex(chessNotation.charAt(0));
+      int rank = GameUtil.toRankIndex(chessNotation.charAt(1));
+      return new Position(file, rank);
+    }
+    return null;
+  }
+
+  public Position copy() {
+    return new Position(this);
   }
 
   @Override

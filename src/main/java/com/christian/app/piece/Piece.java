@@ -31,17 +31,16 @@ public class Piece {
   }
 
   public static Piece create(final char symbol, final String chessNotation) {
-    if (chessNotation != null && chessNotation.length() == 2) {
-      int file = GameUtil.toFileIndex(chessNotation.charAt(0));
-      int rank = GameUtil.toRankIndex(chessNotation.charAt(1));
-      return create(symbol, file, rank);
-    }
-    return null;
+    return create(symbol, Position.create(chessNotation));
   }
 
   public static Piece create(final char symbol, final int file, final int rank) {
+    return create(symbol, new Position(file, rank));
+  }
+
+  public static Piece create(final char symbol, final Position position) {
     final Type type = Type.toType(symbol);
-    if (type != null && GameUtil.isInsideBoard(file, rank)) {
+    if (type != null && position != null && GameUtil.isInsideBoard(position)) {
       final boolean isWhite = Character.isUpperCase(symbol);
       final List<Pair<Direction, Integer>> directions = directionsOf(type, isWhite);
       final Map<Direction, List<Position>> moves = new HashMap<>();
@@ -49,13 +48,13 @@ public class Piece {
         final Direction direction = pair.getFirst();
         final List<Position> path = new ArrayList<>();
         for (int i = 1; i <= pair.getSecond(); i++) {
-          final int stepFile = file + (direction.getPosition().getFile() * i);
-          final int stepRank = rank + (direction.getPosition().getRank() * i);
+          final int stepFile = position.getFile() + (direction.getPosition().getFile() * i);
+          final int stepRank = position.getRank() + (direction.getPosition().getRank() * i);
           path.add(new Position(stepFile, stepRank));
         }
         moves.put(direction, path);
       }
-      return new Piece(type, new Position(file, rank), symbol, isWhite, moves);
+      return new Piece(type, position, symbol, isWhite, moves);
     }
     return null;
   }
