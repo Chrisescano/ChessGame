@@ -1,4 +1,4 @@
-package com.christian.app.util;
+package com.christian.app.game;
 
 public enum MoveStatus {
   UNPARSEABLE_MOVE(false),

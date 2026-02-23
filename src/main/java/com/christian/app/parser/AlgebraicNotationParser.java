@@ -3,7 +3,7 @@ package com.christian.app.parser;
 import com.christian.app.game.GameConstants;
 import com.christian.app.game.GameUtil;
 import com.christian.app.piece.Type;
-import com.christian.app.util.AlgebraicNotation;
+import com.christian.app.pojo.AlgebraicNotation;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

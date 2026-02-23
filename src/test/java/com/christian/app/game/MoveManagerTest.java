@@ -1,8 +1,7 @@
 package com.christian.app.game;
 
 import com.christian.app.piece.Piece;
-import com.christian.app.util.MoveRecord;
-import com.christian.app.util.MoveStatus;
+import com.christian.app.pojo.MoveRecord;
 import com.christian.app.util.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

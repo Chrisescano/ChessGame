@@ -1,8 +1,10 @@
-package com.christian.app.util;
+package com.christian.app.pojo;
 
 import com.christian.app.game.GameConstants;
 import com.christian.app.game.GameUtil;
 import com.christian.app.piece.Piece;
+import com.christian.app.game.MoveStatus;
+import com.christian.app.util.Position;
 import java.util.Objects;
 
 public record MoveRecord(

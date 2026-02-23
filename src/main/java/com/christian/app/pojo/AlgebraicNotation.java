@@ -1,6 +1,7 @@
-package com.christian.app.util;
+package com.christian.app.pojo;
 
 import com.christian.app.piece.Type;
+import com.christian.app.util.Position;
 
 public class AlgebraicNotation {
 
