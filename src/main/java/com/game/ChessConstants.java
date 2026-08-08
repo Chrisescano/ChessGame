@@ -35,6 +35,8 @@ public class ChessConstants {
 
   // Board Constants
   public static final int BOARD_TILE_COUNT = 64;
+  public static final int BOARD_WIDTH = 8;
+  public static final int BOARD_HEIGHT = 8;
   public static final List<Character> BOARD_FILE_TOKENS = List.of('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h');
   public static final List<Character> BOARD_RANK_TOKENS = List.of('8', '7', '6', '5', '4', '3', '2', '1');
 

@@ -1,7 +1,5 @@
 package com.game;
 
-import com.game.piece.Position;
-
 public class ChessUtils {
 
   public static boolean isBlank(final String value) {

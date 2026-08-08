@@ -1,18 +1,17 @@
-package com.game.parser;
+package com.game.fenstring;
 
 import com.game.ChessConstants;
 import com.game.ChessUtils;
-import com.game.obj.FenString;
-import com.game.piece.Piece;
-import com.game.piece.Position;
+import com.game.Piece;
+import com.game.Position;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-
 
 public class FenStringParser {
 
@@ -23,33 +22,33 @@ public class FenStringParser {
 
   private final Pattern castlingRightsPattern = Pattern.compile("^(-|K?Q?k?q?)$");
 
-  public FenString parse(String fenString) {
+  public Map<Component, String> parseComponents(final String fenString) {
     if (ChessUtils.isBlank(fenString)) {
-      LOGGER.warn("FenString cannot be null or blank");
+      LOGGER.error("FenString cannot be null or empty");
       return null;
     }
 
-    String[] components = splitComponents(fenString);
-    List<Piece> pieces;
-    try {
-      pieces = parsePiecePlacement(components[0]);
-    } catch (Exception e) {
-      LOGGER.error("Error while parsing fenString {}", fenString, e);
-      return null;
+    Map<Component, String> result = new HashMap<>();
+    String[] components = fenString.split(ChessConstants.SPACE);
+    if (components.length != EXPECTED_COMPONENT_SIZE) {
+      String[] tmp = new String[EXPECTED_COMPONENT_SIZE];
+      System.arraycopy(components, 0, tmp, 0, Math.min(components.length, EXPECTED_COMPONENT_SIZE));
+      components = tmp;
     }
 
-    boolean activeColor = parseActiveColor(components[1]);
-    boolean[] castlingRights = parseCastlingRights(components[2]);
-    Position enPassantTarget = parseEnPassantTarget(components[3]);
-    int halfMoveClock = parseHalfMoveClock(components[4]);
-    int fullMoveCounter = parseFullMoveCounter(components[5]);
-    return new FenString(pieces, activeColor, castlingRights, enPassantTarget, halfMoveClock, fullMoveCounter);
+    result.put(Component.PIECE_PLACEMENT, components[0]);
+    result.put(Component.ACTIVE_COLOR, components[1]);
+    result.put(Component.CASTLING_RIGHTS, components[2]);
+    result.put(Component.EN_PASSANT_TARGET, components[3]);
+    result.put(Component.HALF_MOVE_CLOCK, components[4]);
+    result.put(Component.FULL_MOVE_COUNTER, components[5]);
+    return result;
   }
 
   public List<Piece> parsePiecePlacement(String piecePlacement) {
     if (ChessUtils.isBlank(piecePlacement)) {
       LOGGER.error("Piece placement cannot be null or empty");
-      throw new IllegalArgumentException("Piece placement is either null or empty");
+      return null;
     }
 
     List<Piece> pieces = new ArrayList<>();
@@ -73,8 +72,8 @@ public class FenStringParser {
     }
 
     if (count != ChessConstants.BOARD_TILE_COUNT) {
-      LOGGER.warn("Piece placement count is [{}/{}] - Returning empty list", count, ChessConstants.BOARD_TILE_COUNT);
-      return Collections.emptyList();
+      LOGGER.error("Piece placement count is [{}/{}] - Returning empty list", count, ChessConstants.BOARD_TILE_COUNT);
+      return null;
     }
     return pieces;
   }
@@ -87,8 +86,8 @@ public class FenStringParser {
     return ChessConstants.ACTIVE_COLOR_WHITE.equals(activeColor);
   }
 
-  public boolean[] parseCastlingRights(final String castlingRights) {
-    final boolean[] result = new boolean[EXPECTED_CASTLING_RIGHTS_SIZE];
+  public Map<CastlingRights, Boolean> parseCastlingRights(final String castlingRights) {
+    final Map<CastlingRights, Boolean> result = createCastlingRightsMap();
     Matcher castlingRightsMatcher;
     if (ChessUtils.isBlank(castlingRights) || !(castlingRightsMatcher = castlingRightsPattern.matcher(castlingRights)).find()) {
       LOGGER.warn("Castling rights is null or empty or does not match expected pattern: [{}]", castlingRights);
@@ -98,10 +97,10 @@ public class FenStringParser {
     String group = castlingRightsMatcher.group(1);
     for (char token : group.toCharArray()) {
       switch (token) {
-        case ChessConstants.WHITE_KING -> result[0] = true;
-        case ChessConstants.WHITE_QUEEN -> result[1] = true;
-        case ChessConstants.BLACK_KING -> result[2] = true;
-        case ChessConstants.BLACK_QUEEN -> result[3] = true;
+        case ChessConstants.WHITE_KING -> result.put(CastlingRights.WHITE_KINGSIDE, Boolean.TRUE);
+        case ChessConstants.WHITE_QUEEN -> result.put(CastlingRights.WHITE_QUEENSIDE, Boolean.TRUE);
+        case ChessConstants.BLACK_KING -> result.put(CastlingRights.BLACK_KINGSIDE, Boolean.TRUE);
+        case ChessConstants.BLACK_QUEEN -> result.put(CastlingRights.BLACK_QUEENSIDE, Boolean.TRUE);
       }
     }
     return result;
@@ -138,13 +137,12 @@ public class FenStringParser {
     return 0;
   }
 
-  private String[] splitComponents(final String fenString) {
-    String[] components = fenString.split(ChessConstants.SPACE);
-    if (components.length != EXPECTED_COMPONENT_SIZE) {
-      String[] result = new String[EXPECTED_COMPONENT_SIZE];
-      System.arraycopy(components, 0, result, 0, result.length);
-      return result;
-    }
-    return components;
+  private Map<CastlingRights, Boolean> createCastlingRightsMap() {
+    Map<CastlingRights, Boolean> result = new HashMap<>();
+    result.put(CastlingRights.WHITE_KINGSIDE, Boolean.FALSE);
+    result.put(CastlingRights.WHITE_QUEENSIDE, Boolean.FALSE);
+    result.put(CastlingRights.BLACK_KINGSIDE, Boolean.FALSE);
+    result.put(CastlingRights.BLACK_QUEENSIDE, Boolean.FALSE);
+    return result;
   }
 }

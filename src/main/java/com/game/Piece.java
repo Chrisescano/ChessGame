@@ -1,6 +1,4 @@
-package com.game.piece;
-
-import com.game.ChessConstants;
+package com.game;
 
 public class Piece {
 
@@ -30,6 +28,15 @@ public class Piece {
     this.type = type;
     this.position = new Position(x, y);
     this.isWhite = isWhite;
+  }
+
+  @Override
+  public String toString() {
+    return "Piece{" +
+        "type=" + type +
+        ", position=" + position +
+        ", isWhite=" + isWhite +
+        '}';
   }
 
   public Type getType() {

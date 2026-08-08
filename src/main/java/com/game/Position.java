@@ -1,4 +1,4 @@
-package com.game.piece;
+package com.game;
 
 public class Position {
 
@@ -8,6 +8,14 @@ public class Position {
   public Position(int x, int y) {
     this.x = x;
     this.y = y;
+  }
+
+  @Override
+  public String toString() {
+    return "Position{" +
+        "x=" + x +
+        ", y=" + y +
+        '}';
   }
 
   public int getX() {
