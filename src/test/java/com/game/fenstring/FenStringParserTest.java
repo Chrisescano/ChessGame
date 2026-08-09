@@ -20,7 +20,7 @@ public class FenStringParserTest {
 
   @Test
   public void testParsingDefaultPiecePlacement() {
-    List<Piece> pieces = parser.parsePiecePlacement(ChessConstants.DEFAULT_PIECE_PLACEMENT);
+    List<Piece> pieces = parser.parsePiecePlacement("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
     Assert.assertNotNull(pieces);
     Assert.assertEquals(pieces.size(), 32);
   }

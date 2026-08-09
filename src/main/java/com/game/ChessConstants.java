@@ -7,7 +7,7 @@ public class ChessConstants {
 
   // Fen Constants
   public static final String SPACE = " ";
-  public static final String DEFAULT_PIECE_PLACEMENT = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+  public static final String STARTING_FEN_STRING = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - KQkq 0 1";
   public static final String ACTIVE_COLOR_WHITE = "w";
   public static final String ACTIVE_COLOR_BLACK = "b";
   public static final char FORWARD_SLASH = '/';

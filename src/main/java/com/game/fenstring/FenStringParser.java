@@ -16,7 +16,6 @@ import org.apache.logging.log4j.LogManager;
 public class FenStringParser {
 
   private static final int EXPECTED_COMPONENT_SIZE = 6;
-  private static final int EXPECTED_CASTLING_RIGHTS_SIZE = 4;
 
   private static final Logger LOGGER = LogManager.getLogger();
 
