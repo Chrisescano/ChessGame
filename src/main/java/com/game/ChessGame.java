@@ -33,6 +33,7 @@ public class ChessGame {
       return;
     }
 
+    LOGGER.info("Starting initialization of {}", this.getClass().getName());
     parser = new FenStringParser();
     board = new Board();
 
@@ -44,15 +45,19 @@ public class ChessGame {
       isWhiteTurn = parser.parseActiveColor(components.get(Component.ACTIVE_COLOR));
       castlingRights = parser.parseCastlingRights(components.get(Component.CASTLING_RIGHTS));
       enPassantTarget = parser.parseEnPassantTarget(components.get(Component.EN_PASSANT_TARGET));
-      halfMoveClock = Integer.parseInt(components.get(Component.HALF_MOVE_CLOCK));
-      fullMoveCounter = Integer.parseInt(components.get(Component.FULL_MOVE_COUNTER));
+      halfMoveClock = parser.parseHalfMoveClock(components.get(Component.HALF_MOVE_CLOCK));
+      fullMoveCounter = parser.parseFullMoveCounter(components.get(Component.FULL_MOVE_COUNTER));
 
       isInitialized = true;
-      LOGGER.info("Successfully initialized {}", this.getClass().getSimpleName());
+      LOGGER.info("Successfully initialized {}", this.getClass().getName());
     } catch (Exception e) {
       LOGGER.error("Failed to initialize {}", this.getClass().getName(), e);
-      isInitialized = false;
+      throw new RuntimeException("Failed to initialize " + this.getClass().getName(), e);
     }
+  }
+
+  public void run() {
+
   }
 
   public String getStartingFenString() {
