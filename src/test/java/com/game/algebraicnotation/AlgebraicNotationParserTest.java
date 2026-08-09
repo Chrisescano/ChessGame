@@ -44,6 +44,12 @@ public class AlgebraicNotationParserTest {
   }
 
   @Test
+  public void testParsingIllegalPawnCapture() {
+    AlgebraicNotation result = parser.parse("be4");
+    Assert.assertNull(result);
+  }
+
+  @Test
   public void testParsingCaptureMove() {
     AlgebraicNotation result = parser.parse("Bxe4");
     AlgebraicNotation expected = new AlgebraicNotation(Type.BISHOP, DEFAULT, true, MOVE_TO, false, false, Status.MOVE);

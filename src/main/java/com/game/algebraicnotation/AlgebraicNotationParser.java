@@ -35,15 +35,15 @@ public class AlgebraicNotationParser {
 
     Matcher matcher;
     if (!(matcher = pattern.matcher(algebraicNotation)).find()) {
-      LOGGER.warn("AlgebraicNotation does not match expected pattern: {}", algebraicNotation);
+      LOGGER.error("AlgebraicNotation does not match expected pattern: {}", algebraicNotation);
       return null;
     }
 
     if (matcher.group(1) != null) {
       char typeChar = matcher.group(2) == null ? ChessConstants.WHITE_PAWN : matcher.group(1).charAt(0);
-
       Type type;
       Position startPos;
+      boolean isCapture = matcher.group(4) != null;
       if (Character.isUpperCase(typeChar)) {
         type = Type.of(typeChar);
         char startingToken = matcher.group(3) == null ? Character.MIN_VALUE : matcher.group(3).charAt(0);
@@ -51,17 +51,17 @@ public class AlgebraicNotationParser {
       } else {
         type = Type.PAWN;
         startPos = new Position(ChessUtils.toFile(typeChar), -1);
+        if (!isCapture) {
+          LOGGER.warn("Missing capture symbol when pawn file is added to algebraic notation: [{}]", algebraicNotation);
+          return null;
+        }
       }
-
-      boolean isCapture = matcher.group(4) != null;
 
       String endingStr = matcher.group(5) == null ? "  " : matcher.group(5);
       Position endPos = new Position(ChessUtils.toFile(endingStr.charAt(0)), ChessUtils.toRank(endingStr.charAt(1)));
-
       char captureOrMate = matcher.group(6) == null ? Character.MIN_VALUE : matcher.group(6).charAt(0);
       boolean isMate = captureOrMate == '+';
       boolean isCheck = captureOrMate == '#';
-
       return new AlgebraicNotation(type, startPos, isCapture, endPos, isMate, isCheck, Status.MOVE);
     } else if (matcher.group(7) != null) {
       return new AlgebraicNotation(null, null, false, null, false, false, Status.WHITE_WIN);
