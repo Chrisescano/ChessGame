@@ -4,12 +4,12 @@ import java.util.Objects;
 
 public class Position {
 
-  private int x;
-  private int y;
+  private int file;
+  private int rank;
 
   public Position(int x, int y) {
-    this.x = x;
-    this.y = y;
+    this.file = x;
+    this.rank = y;
   }
 
   @Override
@@ -17,35 +17,35 @@ public class Position {
     if (!(object instanceof Position position)) {
       return false;
     }
-    return x == position.x && y == position.y;
+    return file == position.file && rank == position.rank;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(x, y);
+    return Objects.hash(file, rank);
   }
 
   @Override
   public String toString() {
     return "Position{" +
-        "x=" + x +
-        ", y=" + y +
+        "x=" + file +
+        ", y=" + rank +
         '}';
   }
 
-  public int getX() {
-    return x;
+  public int getFile() {
+    return file;
   }
 
-  public void setX(int x) {
-    this.x = x;
+  public void setFile(int file) {
+    this.file = file;
   }
 
-  public int getY() {
-    return y;
+  public int getRank() {
+    return rank;
   }
 
-  public void setY(int y) {
-    this.y = y;
+  public void setRank(int rank) {
+    this.rank = rank;
   }
 }

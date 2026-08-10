@@ -90,8 +90,8 @@ public class FenStringParserTest {
   public void testParsingEnPassantTarget() {
     Position enPassantTarget = parser.parseEnPassantTarget("a1");
     Assert.assertNotNull(enPassantTarget);
-    Assert.assertEquals(enPassantTarget.getX(), 0);
-    Assert.assertEquals(enPassantTarget.getY(), 7);
+    Assert.assertEquals(enPassantTarget.getFile(), 0);
+    Assert.assertEquals(enPassantTarget.getRank(), 7);
   }
 
   @Test

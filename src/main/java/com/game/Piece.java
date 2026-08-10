@@ -4,6 +4,7 @@ public class Piece {
 
   private Type type;
   private Position position;
+  private char symbol;
   private boolean isWhite;
 
   public enum Type {
@@ -24,9 +25,10 @@ public class Piece {
     }
   }
 
-  public Piece(Type type, int x, int y, boolean isWhite) {
+  public Piece(Type type, int x, int y, char symbol, boolean isWhite) {
     this.type = type;
     this.position = new Position(x, y);
+    this.symbol = symbol;
     this.isWhite = isWhite;
   }
 
@@ -53,6 +55,14 @@ public class Piece {
 
   public void setPosition(Position position) {
     this.position = position;
+  }
+
+  public char getSymbol() {
+    return symbol;
+  }
+
+  public void setSymbol(char symbol) {
+    this.symbol = symbol;
   }
 
   public boolean isWhite() {

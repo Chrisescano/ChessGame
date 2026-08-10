@@ -30,4 +30,12 @@ public class ChessUtils {
     return null;
   }
 
+  public static boolean isWithinBoardFiles(int value) {
+    return ChessUtils.withinRange(value, 0, ChessConstants.BOARD_WIDTH - 1);
+  }
+
+  public static boolean isWithinBoardRanks(int value) {
+    return ChessUtils.withinRange(value, 0, ChessConstants.BOARD_HEIGHT - 1);
+  }
+
 }

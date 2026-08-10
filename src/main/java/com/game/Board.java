@@ -1,6 +1,9 @@
 package com.game;
 
+import com.game.Piece.Type;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -8,10 +11,10 @@ public class Board {
 
   private static final Logger LOGGER = LogManager.getLogger();
 
-  private final Piece[][] board;
+  private final List<Piece> board;
 
   public Board() {
-    board = new Piece[ChessConstants.BOARD_HEIGHT][ChessConstants.BOARD_WIDTH];
+    board = new ArrayList<>();
   }
 
   public void placePiece(List<Piece> pieces) {
@@ -19,12 +22,32 @@ public class Board {
   }
 
   public void placePiece(Piece piece) {
-    try {
-      Position pos = piece.getPosition();
-      board[pos.getY()][pos.getX()] = piece;
-    } catch (Exception e) {
-      LOGGER.error("Failed to place piece: {}", piece);
+    if (piece != null && isWithinBounds(piece.getPosition())) {
+      board.add(piece);
+    } else {
+      LOGGER.warn("Piece could not be placed into board: {}", piece);
     }
+  }
+
+  public List<Piece> searchFor(Type type, Integer file, Integer rank, Boolean isWhite) {
+    Stream<Piece> stream = board.stream();
+    if (type != null) {
+      stream = stream.filter(p -> p.getType() == type);
+    }
+    if (file != null) {
+      stream = stream.filter(p -> file.equals(p.getPosition().getFile()));
+    }
+    if (rank != null) {
+      stream = stream.filter(p -> rank.equals(p.getPosition().getRank()));
+    }
+    if (isWhite != null) {
+      stream = stream.filter(p -> isWhite.equals(p.isWhite()));
+    }
+    return stream.toList();
+  }
+
+  private boolean isWithinBounds(Position pos) {
+    return pos != null && ChessUtils.isWithinBoardFiles(pos.getFile()) && ChessUtils.isWithinBoardRanks(pos.getRank());
   }
 
 }

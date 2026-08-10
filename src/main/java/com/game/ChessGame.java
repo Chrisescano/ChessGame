@@ -8,6 +8,7 @@ import com.game.fenstring.CastlingRights;
 import com.game.fenstring.Component;
 import com.game.fenstring.FenStringParser;
 import com.game.io.TerminalIO;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -78,7 +79,11 @@ public class ChessGame {
   public void run() {
     while (isRunning) {
       AlgebraicNotation input = getUserInput();
-      System.out.println(input);
+      List<Piece> results = queryBoard(input);
+      if (results == null || results.isEmpty()) {
+        LOGGER.warn("No pieces found for input {}", input);
+        continue;
+      }
 
       flipTurn();
       incrementCounter(input.getType() == Type.PAWN, input.isCapture()); // TODO: check status = Move as well
@@ -95,6 +100,19 @@ public class ChessGame {
       result = algParser.parse(input);
     }
     return result;
+  }
+
+  private List<Piece> queryBoard(AlgebraicNotation alg) {
+    if (alg.getStatus() == Status.MOVE) {
+      if (ChessUtils.isWithinBoardFiles(alg.getStartPosition().getFile())) {
+        return board.searchFor(alg.getType(), alg.getStartPosition().getFile(), null, isWhiteTurn);
+      } else if (ChessUtils.isWithinBoardRanks(alg.getStartPosition().getRank())) {
+        return board.searchFor(alg.getType(), null, alg.getStartPosition().getRank(), isWhiteTurn);
+      } else {
+        return board.searchFor(alg.getType(), null, null, isWhiteTurn);
+      }
+    }
+    return Collections.emptyList();
   }
 
   private void flipTurn() {
