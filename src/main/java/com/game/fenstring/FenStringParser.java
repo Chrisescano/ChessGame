@@ -54,7 +54,7 @@ public class FenStringParser {
     int x = 0, y = 0, count = 0;
     for (char token : piecePlacement.toCharArray()) {
       if (ChessConstants.FEN_VALID_PIECE_TOKENS.contains(token)) {
-        Piece piece = new Piece(Piece.Type.of(token), x, y, token, Character.isUpperCase(token));
+        Piece piece = new Piece(token, x, y);
         pieces.add(piece);
         x++;
         count++;

@@ -45,7 +45,7 @@ public class AlgebraicNotationParser {
       Position startPos;
       boolean isCapture = matcher.group(4) != null;
       if (Character.isUpperCase(typeChar)) {
-        type = Type.of(typeChar);
+        type = ChessUtils.typeOf(typeChar);
         char startingToken = matcher.group(3) == null ? Character.MIN_VALUE : matcher.group(3).charAt(0);
         startPos = new Position(ChessUtils.toFile(startingToken), ChessUtils.toRank(startingToken));
       } else {

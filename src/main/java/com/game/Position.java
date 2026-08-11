@@ -28,8 +28,8 @@ public class Position {
   @Override
   public String toString() {
     return "Position{" +
-        "x=" + file +
-        ", y=" + rank +
+        "file=" + file +
+        ", rank=" + rank +
         '}';
   }
 

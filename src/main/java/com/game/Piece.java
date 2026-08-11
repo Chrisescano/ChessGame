@@ -7,29 +7,17 @@ public class Piece {
   private char symbol;
   private boolean isWhite;
 
-  public enum Type {
-    ROOK, KNIGHT, BISHOP, QUEEN, KING, PAWN;
 
-    public static Type of(char token) {
-      Type type;
-      switch (token) {
-        case ChessConstants.WHITE_ROOK, ChessConstants.BLACK_ROOK -> type = Type.ROOK;
-        case ChessConstants.WHITE_KNIGHT, ChessConstants.BLACK_KNIGHT ->  type = Type.KNIGHT;
-        case ChessConstants.WHITE_BISHOP, ChessConstants.BLACK_BISHOP -> type = Type.BISHOP;
-        case ChessConstants.WHITE_QUEEN, ChessConstants.BLACK_QUEEN -> type = Type.QUEEN;
-        case ChessConstants.WHITE_KING, ChessConstants.BLACK_KING -> type = Type.KING;
-        case ChessConstants.WHITE_PAWN, ChessConstants.BLACK_PAWN -> type = Type.PAWN;
-        default -> type = null;
-      }
-      return type;
-    }
+
+  public enum Type {
+    ROOK, KNIGHT, BISHOP, QUEEN, KING, PAWN
   }
 
-  public Piece(Type type, int x, int y, char symbol, boolean isWhite) {
-    this.type = type;
+  public Piece(char symbol, int x, int y) {
+    this.type = ChessUtils.typeOf(symbol);
     this.position = new Position(x, y);
     this.symbol = symbol;
-    this.isWhite = isWhite;
+    this.isWhite = Character.isUpperCase(symbol);
   }
 
   @Override

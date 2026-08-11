@@ -1,5 +1,7 @@
 package com.game;
 
+import com.game.Piece.Type;
+
 public class ChessUtils {
 
   public static boolean isBlank(final String value) {
@@ -36,6 +38,20 @@ public class ChessUtils {
 
   public static boolean isWithinBoardRanks(int value) {
     return ChessUtils.withinRange(value, 0, ChessConstants.BOARD_HEIGHT - 1);
+  }
+
+  public static Type typeOf(char token) {
+    Type type;
+    switch (token) {
+      case ChessConstants.WHITE_ROOK, ChessConstants.BLACK_ROOK -> type = Type.ROOK;
+      case ChessConstants.WHITE_KNIGHT, ChessConstants.BLACK_KNIGHT ->  type = Type.KNIGHT;
+      case ChessConstants.WHITE_BISHOP, ChessConstants.BLACK_BISHOP -> type = Type.BISHOP;
+      case ChessConstants.WHITE_QUEEN, ChessConstants.BLACK_QUEEN -> type = Type.QUEEN;
+      case ChessConstants.WHITE_KING, ChessConstants.BLACK_KING -> type = Type.KING;
+      case ChessConstants.WHITE_PAWN, ChessConstants.BLACK_PAWN -> type = Type.PAWN;
+      default -> type = null;
+    }
+    return type;
   }
 
 }
