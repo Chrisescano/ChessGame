@@ -12,6 +12,10 @@ public class Position {
     this.rank = y;
   }
 
+  public Position translate(int x, int y) {
+    return new Position(this.file + x, this.rank + y);
+  }
+
   @Override
   public boolean equals(Object object) {
     if (!(object instanceof Position position)) {

@@ -20,12 +20,12 @@ public class ChessUtils {
     return ChessConstants.BOARD_RANK_TOKENS.indexOf(rank);
   }
 
-  public static Position toPosition(final String algebraicNotation) {
-    if (ChessUtils.isBlank(algebraicNotation) || algebraicNotation.length() != 2) {
+  public static Position toPosition(final String chessSquare) {
+    if (ChessUtils.isBlank(chessSquare) || chessSquare.length() != 2) {
       return null;
     }
-    int file = toFile(algebraicNotation.charAt(0));
-    int rank = toRank(algebraicNotation.charAt(1));
+    int file = toFile(chessSquare.charAt(0));
+    int rank = toRank(chessSquare.charAt(1));
     if (file != -1 && rank != -1) {
       return new Position(file, rank);
     }

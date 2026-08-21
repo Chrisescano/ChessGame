@@ -6,16 +6,15 @@ public class Piece {
   private Position position;
   private char symbol;
   private boolean isWhite;
-
-
+  private boolean isMoved;
 
   public enum Type {
     ROOK, KNIGHT, BISHOP, QUEEN, KING, PAWN
   }
 
-  public Piece(char symbol, int x, int y) {
+  public Piece(char symbol, int file, int rank) {
     this.type = ChessUtils.typeOf(symbol);
-    this.position = new Position(x, y);
+    this.position = new Position(file, rank);
     this.symbol = symbol;
     this.isWhite = Character.isUpperCase(symbol);
   }
@@ -59,5 +58,13 @@ public class Piece {
 
   public void setWhite(boolean white) {
     isWhite = white;
+  }
+
+  public boolean isMoved() {
+    return isMoved;
+  }
+
+  public void setMoved(boolean moved) {
+    this.isMoved = moved;
   }
 }

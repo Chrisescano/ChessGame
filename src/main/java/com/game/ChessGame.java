@@ -60,7 +60,7 @@ public class ChessGame {
       Map<Component, String> components = fenParser.parseComponents(startingFenString);
       List<Piece> pieces = fenParser.parsePiecePlacement(components.get(Component.PIECE_PLACEMENT));
       Objects.requireNonNull(pieces);
-      board.placePiece(pieces);
+      board.place(pieces);
       isWhiteStarting = isWhiteTurn = fenParser.parseActiveColor(components.get(Component.ACTIVE_COLOR));
       castlingRights = fenParser.parseCastlingRights(components.get(Component.CASTLING_RIGHTS));
       enPassantTarget = fenParser.parseEnPassantTarget(components.get(Component.EN_PASSANT_TARGET));

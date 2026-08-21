@@ -17,16 +17,20 @@ public class Board {
     board = new ArrayList<>();
   }
 
-  public void placePiece(List<Piece> pieces) {
-    pieces.forEach(this::placePiece);
+  public void place(List<Piece> pieces) {
+    pieces.forEach(this::place);
   }
 
-  public void placePiece(Piece piece) {
-    if (piece != null && isWithinBounds(piece.getPosition())) {
+  public void place(Piece piece) {
+    if (piece != null && isInside(piece.getPosition())) {
       board.add(piece);
     } else {
       LOGGER.warn("Piece could not be placed into board: {}", piece);
     }
+  }
+
+  public Piece get(Position position) {
+    return board.stream().filter(piece -> piece.getPosition().equals(position)).findFirst().orElse(null);
   }
 
   public List<Piece> searchFor(Type type, Integer file, Integer rank, Boolean isWhite) {
@@ -46,7 +50,7 @@ public class Board {
     return stream.toList();
   }
 
-  private boolean isWithinBounds(Position pos) {
+  public boolean isInside(Position pos) {
     return pos != null && ChessUtils.isWithinBoardFiles(pos.getFile()) && ChessUtils.isWithinBoardRanks(pos.getRank());
   }
 
