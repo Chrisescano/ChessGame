@@ -1,8 +1,7 @@
 package com.game;
 
-import com.game.Piece.Type;
 import com.game.algebraicnotation.AlgebraicNotation;
-import com.game.algebraicnotation.AlgebraicNotation.Status;
+import com.game.algebraicnotation.AlgebraicNotation.Type;
 import com.game.algebraicnotation.AlgebraicNotationParser;
 import com.game.fenstring.CastlingRights;
 import com.game.fenstring.Component;
@@ -86,7 +85,7 @@ public class ChessGame {
       }
 
       flipTurn();
-      incrementCounter(input.getType() == Type.PAWN, input.isCapture()); // TODO: check status = Move as well
+      incrementCounter(input.getPieceType() == Piece.Type.PAWN, input.isCapture()); // TODO: check status = Move as well
       incrementClock();
     }
   }
@@ -103,13 +102,13 @@ public class ChessGame {
   }
 
   private List<Piece> queryBoard(AlgebraicNotation alg) {
-    if (alg.getStatus() == Status.MOVE) {
+    if (alg.getType() == Type.MOVE) {
       if (ChessUtils.isWithinBoardFiles(alg.getStartPosition().getFile())) {
-        return board.searchFor(alg.getType(), alg.getStartPosition().getFile(), null, isWhiteTurn);
+        return board.searchFor(alg.getPieceType(), alg.getStartPosition().getFile(), null, isWhiteTurn);
       } else if (ChessUtils.isWithinBoardRanks(alg.getStartPosition().getRank())) {
-        return board.searchFor(alg.getType(), null, alg.getStartPosition().getRank(), isWhiteTurn);
+        return board.searchFor(alg.getPieceType(), null, alg.getStartPosition().getRank(), isWhiteTurn);
       } else {
-        return board.searchFor(alg.getType(), null, null, isWhiteTurn);
+        return board.searchFor(alg.getPieceType(), null, null, isWhiteTurn);
       }
     }
     return Collections.emptyList();

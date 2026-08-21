@@ -2,9 +2,9 @@ package com.game.algebraicnotation;
 
 import com.game.ChessConstants;
 import com.game.ChessUtils;
-import com.game.Piece.Type;
+import com.game.Piece;
 import com.game.Position;
-import com.game.algebraicnotation.AlgebraicNotation.Status;
+import com.game.algebraicnotation.AlgebraicNotation.Type;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
@@ -41,7 +41,7 @@ public class AlgebraicNotationParser {
 
     if (matcher.group(1) != null) {
       char typeChar = matcher.group(2) == null ? ChessConstants.WHITE_PAWN : matcher.group(1).charAt(0);
-      Type type;
+      Piece.Type type;
       Position startPos;
       boolean isCapture = matcher.group(4) != null;
       if (Character.isUpperCase(typeChar)) {
@@ -49,7 +49,7 @@ public class AlgebraicNotationParser {
         char startingToken = matcher.group(3) == null ? Character.MIN_VALUE : matcher.group(3).charAt(0);
         startPos = new Position(ChessUtils.toFile(startingToken), ChessUtils.toRank(startingToken));
       } else {
-        type = Type.PAWN;
+        type = Piece.Type.PAWN;
         startPos = new Position(ChessUtils.toFile(typeChar), -1);
         if (!isCapture) {
           LOGGER.warn("Missing capture symbol when pawn file is added to algebraic notation: [{}]", algebraicNotation);
@@ -62,13 +62,13 @@ public class AlgebraicNotationParser {
       char captureOrMate = matcher.group(6) == null ? Character.MIN_VALUE : matcher.group(6).charAt(0);
       boolean isMate = captureOrMate == '+';
       boolean isCheck = captureOrMate == '#';
-      return new AlgebraicNotation(type, startPos, isCapture, endPos, isMate, isCheck, Status.MOVE);
+      return new AlgebraicNotation(type, startPos, isCapture, endPos, isMate, isCheck, Type.MOVE);
     } else if (matcher.group(7) != null) {
-      return new AlgebraicNotation(null, null, false, null, false, false, Status.WHITE_WIN);
+      return new AlgebraicNotation(null, null, false, null, false, false, Type.WHITE_WIN);
     } else if (matcher.group(8) != null) {
-      return new AlgebraicNotation(null, null, false, null, false, false, Status.BLACK_WIN);
+      return new AlgebraicNotation(null, null, false, null, false, false, Type.BLACK_WIN);
     } else if (matcher.group(9) != null) {
-      return new AlgebraicNotation(null, null, false, null, false, false, Status.DRAW);
+      return new AlgebraicNotation(null, null, false, null, false, false, Type.DRAW);
     }
     return null;
   }

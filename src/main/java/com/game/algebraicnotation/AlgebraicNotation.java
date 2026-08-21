@@ -1,25 +1,25 @@
 package com.game.algebraicnotation;
 
-import com.game.Piece.Type;
+import com.game.Piece;
 import com.game.Position;
 import java.util.Objects;
 
 public class AlgebraicNotation {
 
-  private Type type;
+  private Piece.Type type;
   private Position startPosition;
   private boolean isCapture;
   private Position endPosition;
   private boolean isMate;
   private boolean isCheck;
-  private Status status;
+  private Type status;
 
-  public enum Status {
+  public enum Type {
     MOVE, WHITE_WIN, BLACK_WIN, DRAW
   }
 
-  public AlgebraicNotation(Type type, Position startPosition, boolean isCapture, Position endPosition, boolean isMate,
-      boolean isCheck, Status status) {
+  public AlgebraicNotation(Piece.Type type, Position startPosition, boolean isCapture, Position endPosition, boolean isMate,
+      boolean isCheck, Type status) {
     this.type = type;
     this.startPosition = startPosition;
     this.isCapture = isCapture;
@@ -57,11 +57,11 @@ public class AlgebraicNotation {
         '}';
   }
 
-  public Type getType() {
+  public Piece.Type getPieceType() {
     return type;
   }
 
-  public void setType(Type type) {
+  public void setType(Piece.Type type) {
     this.type = type;
   }
 
@@ -105,11 +105,11 @@ public class AlgebraicNotation {
     isCheck = check;
   }
 
-  public Status getStatus() {
+  public Type getType() {
     return status;
   }
 
-  public void setStatus(Status status) {
+  public void setType(Type status) {
     this.status = status;
   }
 }
