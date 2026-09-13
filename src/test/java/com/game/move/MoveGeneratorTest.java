@@ -1,8 +1,10 @@
 package com.game.move;
 
 import com.game.Board;
+import com.game.ChessGame.GameState;
 import com.game.Piece;
-import com.game.move.MoveGenerator.Results;
+import com.game.move.Move.Type;
+import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -23,6 +25,14 @@ public class MoveGeneratorTest {
     board = new Board();
   }
 
+  public int totalCount(List<Move> moves) {
+    int count = 0;
+    for (Move move : moves) {
+      count += move.count();
+    }
+    return count;
+  }
+
   /**
    * <b>Sliding Generation Tests</b>
    */
@@ -32,9 +42,9 @@ public class MoveGeneratorTest {
     Piece rook = new Piece('R', 0, 7);
     board.place(rook);
 
-    Results results = generator.generate(rook, board);
+    List<Move> moves = generator.generate(rook, new GameState(board, null));
 
-    Assert.assertEquals(results.getSize(), 14);
+    Assert.assertEquals(totalCount(moves), 14);
   }
 
   @Test
@@ -46,9 +56,9 @@ public class MoveGeneratorTest {
     board.place(pawn);
     board.place(knight);
 
-    Results results = generator.generate(rook, board);
+    List<Move> moves = generator.generate(rook, new GameState(board, null));
 
-    Assert.assertEquals(results.getSize(), 1);
+    Assert.assertEquals(totalCount(moves), 1);
   }
 
   /**
@@ -60,9 +70,9 @@ public class MoveGeneratorTest {
     Piece knight = new Piece('N', 0, 7);
     board.place(knight);
 
-    Results results = generator.generate(knight, board);
+    List<Move> moves = generator.generate(knight, new GameState(board, null));
 
-    Assert.assertEquals(results.getSize(), 2);
+    Assert.assertEquals(totalCount(moves), 2);
   }
 
   @Test
@@ -74,9 +84,9 @@ public class MoveGeneratorTest {
     board.place(rook);
     board.place(pawn);
 
-    Results results = generator.generate(knight, board);
+    List<Move> moves = generator.generate(knight, new GameState(board, null));
 
-    Assert.assertEquals(results.getSize(), 1);
+    Assert.assertEquals(totalCount(moves), 1);
   }
 
   /**
@@ -85,23 +95,23 @@ public class MoveGeneratorTest {
 
   @Test
   private void testEmptyBoardPawnNotMovedStepGeneration() {
-    Piece pawn = new Piece('P', 1, 7);
+    Piece pawn = new Piece('P', 1, 6);
     board.place(pawn);
 
-    Results results = generator.generate(pawn, board);
+    List<Move> moves = generator.generate(pawn, new GameState(board, null));
 
-    Assert.assertEquals(results.getSize(), 2);
+    Assert.assertEquals(totalCount(moves), 2);
   }
 
   @Test
   private void testEmptyBoardPawnMovedStepGeneration() {
-    Piece pawn = new Piece('P', 1, 7);
+    Piece pawn = new Piece('P', 1, 6);
     pawn.setMoved(true);
     board.place(pawn);
 
-    Results results = generator.generate(pawn, board);
+    List<Move> moves = generator.generate(pawn, new GameState(board, null));
 
-    Assert.assertEquals(results.getSize(), 1);
+    Assert.assertEquals(totalCount(moves), 1);
   }
 
   @Test
@@ -115,8 +125,23 @@ public class MoveGeneratorTest {
     board.place(knight);
     board.place(rook2);
 
-    Results results = generator.generate(pawn, board);
+    List<Move> moves = generator.generate(pawn, new GameState(board, null));
 
-    Assert.assertEquals(results.getSize(), 1);
+    Assert.assertEquals(totalCount(moves), 1);
+  }
+
+  @Test
+  private void testEnPassant() {
+    Piece pawnA = new Piece('P', 0, 5);
+    Piece pawnB = new Piece('p', 1, 5);
+    board.place(pawnA);
+    board.place(pawnB);
+    Move prevMove = new Move(pawnA.getType());
+    prevMove.add(pawnA.getPosition(), Type.DOUBLE_JUMP);
+
+    List<Move> moves = generator.generate(pawnB, new GameState(board, prevMove));
+
+    Assert.assertEquals(totalCount(moves), 2);
+    Assert.assertTrue(moves.stream().anyMatch(m -> m.getType().equals(Type.EN_PASSANT)));
   }
 }

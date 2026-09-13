@@ -7,6 +7,7 @@ import com.game.fenstring.CastlingRights;
 import com.game.fenstring.Component;
 import com.game.fenstring.FenStringParser;
 import com.game.io.TerminalIO;
+import com.game.move.Move;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -34,11 +35,7 @@ public class ChessGame {
 
   private Map<CastlingRights, Boolean> castlingRights;
 
-  public static void main(String[] args) {
-    ChessGame game = new ChessGame(ChessConstants.STARTING_FEN_STRING);
-    game.init();
-    game.run();
-  }
+  public static record GameState(Board board, Move previousMove) {}
 
   public ChessGame(String startingFenString) {
     this.startingFenString = startingFenString;
